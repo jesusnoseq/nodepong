@@ -1,0 +1,11 @@
+{
+    "name": "nodepong",
+    "version": "0.0.1",
+    "description": "Pong en red",
+    "dependencies": {
+        "socket.io": "latest",
+        "express": "latest",
+        "jade": "latest"
+    },
+    "author": "Jesusnoseq & PacoPGD"
+}
