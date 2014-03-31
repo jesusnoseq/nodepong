@@ -23,6 +23,3 @@ Creación de la web que se conectará al servidor y que mostrará al usuario el 
 
 <h2>Conclusiones</h2>
 Al final del taller, puede durar cerca de dos horas, el alumno conocerá las tecnologías necesarias para crear herramientas colaborativas en tiempo real con node.js.
-
-
-Probando jesus
