@@ -1,5 +1,5 @@
 <h1>nodepong</h1>
-<h1>Taller de Node.js - Haciendo un pong en red</h1>
+<h2>Taller de Node.js - Haciendo un pong en red</h2>
 
 <h2>Introducción</h2>
 Se realizará un taller de node.js en el que se guiará paso a paso al alumno en la realización de un pong multijugador en tiempo real a través de la red.
