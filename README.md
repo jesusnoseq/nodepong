@@ -1,4 +1,4 @@
-<h1>nodepong</h1>
+<h1>NodePong</h1>
 <h2>Taller de Node.js - Haciendo un pong en red</h2>
 
 <h2>Introducción</h2>
