@@ -1,0 +1,3 @@
+http://lynx.io/article/socketio-introduction
+http://krasimirtsonev.com/blog/article/Real-time-chat-with-NodeJS-Socketio-and-ExpressJS
+https://github.com/LearnBoost/socket.io/wiki/
