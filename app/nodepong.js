@@ -44,36 +44,49 @@ io.configure('development', function() {
 	io.set('transports', ['websocket']);
 });
 
+/*
+ setInterval(function() {
+ update();
+ player.draw();
+ }, 1000/FPS);
+ */
 var playerIDCounter = 0;
+//var game=require('./game.js');
 var FPS = 30;
-var speed = 10;
-var scenaryWithd=1000;
-var scenaryHeight=500;
+var ancho = 1000;
+var alto = 500;
 
-var Actor = (function(velocidad, xIni, yIni) {
-	this.v = velocidad;
+var Actor = (function(vx, vy, xIni, yIni) {
+	this.vx = vx;
+	this.vy = vy;
 	this.x = xIni;
 	this.y = yIni;
 });
 
-var Jugador=(function() {
-
-	this.mover=(function (dir) {
+var Jugador = (function(vx,vy,xini,yini,ancho,alto) {
+	Actor.call(this,vx,vy,xini,yini);
+	this.ancho = ancho;
+	this.alto = alto;
+	this.mover = (function(dir) {
 		switch(dir) {
 			case 1:
-				this.y+=this.v;
+				this.y += this.v;
 				break;
 			case 2:
-				this.y-=this.v;
+				this.y -= this.v;
 				break;
 			default:
 
 		}
 	});
 });
+Jugador.prototype = new Actor();
 
-var Bola=(function(angulo) {
-	this.angulo=angulo;// en radianes
+var Bola = (function(vx,vy,xini,yini,radio,angulo) {
+	Actor.call(this,vx,vy,xini,yini);
+	this.radio = radio;
+	this.angulo = angulo;
+	// en radianes
 
 	this.mover = (function() {
 		vy = (float)(v * Math.sin(angulo));
@@ -83,42 +96,52 @@ var Bola=(function(angulo) {
 	});
 
 	this.chocar = (function() {
-
+		this.angulo *= -1;
 	});
 });
-
-Jugador.prototype = new Actor();
 Bola.prototype = new Actor();
 
-function update(){
-	
+var anchoPala=10;
+var altoPala=50;
+var p1 = new Jugador(0,10,10,250,10,50);
+var p2 = new Jugador(0,10,ancho-20,250,10,50);
+var b = new Bola(5,5,250,250,10,0);
+
+
+function update() {
+
 }
-
-
-/*
-setInterval(function() {
-    update();
-    player.draw();
-}, 1000/FPS);
-*/
-
 
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
 	playerIDCounter++;
+	console.log("New user");
 
-	socket.emit('draw', {
-		//id : socket.get('id')
+	socket.emit('initData', {
+		'id' : playerIDCounter,
+		'width' : ancho,
+		'height' : alto,
+		'FPS' : FPS,
+		'p1' : p1,
+		'p2' : p2,
+		'bola' : b
 	});
 
-	socket.on('play', function(data) {
-		console.log(data);
-	});
+	if (playerIDCounter == 2) {
+		socket.emit('draw', {
+			'p1' : p1,
+			'p2' : p2,
+			'bola' : b
+		});
 
+		socket.on('play', function(data) {
+			console.log(data);
+		});
+	}
 	socket.on('disconnect', function() {
 		io.sockets.emit('user disconnected');
 	});
-});
 
+});
 
 console.log("Listening on port " + port);
