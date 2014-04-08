@@ -2,7 +2,6 @@ var KEY_UP = 38;
 var KEY_DOWN = 40;
 
 var canvas = null, ctx = null;
-var datos;
 
 window.onload = (function() {
 
@@ -15,6 +14,7 @@ window.onload = (function() {
 
 	socket.on('draw', function(data) {
 		console.log(data);
+		paint(ctx,data);
 	});
 
 	socket.on('disconnect', function() {
@@ -47,14 +47,15 @@ window.onload = (function() {
 function init(data) {
 	canvas = document.getElementById('juego');
 	ctx = canvas.getContext('2d');
-	datos = data;
-	setFullScreen();
-	paint(ctx);
+
+	setFullScreen(data);
+	
+	paint(ctx,data);
 }
 
-function setFullScreen() {
-	canvas.width = datos.width;
-	canvas.height = datos.height;
+function setFullScreen(data) {
+	canvas.width = data.width;
+	canvas.height = data.height;
 
 	var w = window.innerWidth / canvas.width;
 	var h = window.innerHeight / canvas.height;
@@ -72,7 +73,7 @@ function setFullScreen() {
 	canvas.style.marginTop = -(canvas.height * scale) / 2 + 'px';
 }
 
-function paint(ctx) {
+function paint(ctx,datos) {
 	//FONDO
 	ctx.fillStyle = '#000';
 	ctx.fillRect(0, 0, datos.width, datos.height);
@@ -89,8 +90,12 @@ function paint(ctx) {
 	ctx.fillStyle = '#f00';
 	//ctx.arc(490,240,20,0,(Math.PI/180)*360,true);
 	ctx.arc(datos.bola.x, datos.bola.y, datos.bola.radio, 0, (Math.PI / 180) * 360, true);
-
 	ctx.fill();
 	//Necesario para rellenar la bola de color y se pueda ver en el escenario
+	
+	//GOLES
+	ctx.font="50px Verdana";
+	ctx.fillStyle = '#00f';
+	ctx.fillText(datos.p1.goles+"-"+datos.p2.goles,445,50); 
 }
 
