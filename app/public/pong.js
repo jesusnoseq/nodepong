@@ -5,9 +5,6 @@ window.onload = (function() {
 	socket.on('connect', function() {
 		socket.send();
 		console.log('Connected!');
-		
-		
-		//player = new Player(50, 50);
 	});
 
 	socket.on('initData', function(data) {
@@ -21,15 +18,16 @@ window.onload = (function() {
 	socket.on('disconnect', function() {
 		console.log('Disconnected!');
 	});
+	
+	socket.on('initData', function(data) {
+		console.log(data);
+	});
 
 });
-
 
 window.addEventListener('load',init,false);
 
 var canvas=null, ctx=null;
-
-
 
 function init(){
     canvas=document.getElementById('juego');
