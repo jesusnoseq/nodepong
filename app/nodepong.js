@@ -90,12 +90,12 @@ function update(){
 }
 
 
-
+/*
 setInterval(function() {
     update();
     player.draw();
 }, 1000/FPS);
-
+*/
 
 
 io.sockets.on('connection', function(socket) {
