@@ -54,8 +54,8 @@ io.configure('development', function() {
 var playerIDCounter = 0;
 //var game=require('./game.js');
 var FPS = 30;
-var ancho = 1000;
-var alto = 500;
+var anchoEscenario = 1000;
+var altoEscenario = 500;
 var KEY_UP = 38;
 var KEY_DOWN = 40;
 
@@ -74,21 +74,19 @@ var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
 	this.alto = alto;
 	this.goles = 0;
 	this.mover = (function(dir) {
-		console.log("Moviendo!!!!! 2");
 		switch(dir) {
 			case KEY_UP:
-				console.log("Moviendo!!!!!!! 3");
-				//if((this.y+this.alto)<alto){
-					console.log("Moviendo!!!!!! 4");
-					this.y += this.vy;
-				//}
+				if(this.y>0){
+					console.log("Moviendo arriba !!"+this.y);
+					this.y -= this.vy;
+				}
 				break;
 			case KEY_DOWN:
-				console.log("Moviendo!!!!!!!!!!!! 6");
-				//if(this.y>0){
-					console.log("Moviendo!!!!!!!!!!!! 7");
-					this.y -= this.vy;
-				//}
+				console.log("Moviendo abajo !!"+this.y);
+				if(this.y<altoEscenario){
+					console.log("mueve outa");
+					this.y += this.vy;
+				}
 				break;
 			default:
 
@@ -152,8 +150,8 @@ io.sockets.on('connection', function(socket) {
 
 	socket.emit('initData', {
 		'id' : myid,
-		'width' : ancho,
-		'height' : alto,
+		'width' : anchoEscenario,
+		'height' : altoEscenario,
 		'FPS' : FPS,
 		'p1' : p1,
 		'p2' : p2,
