@@ -101,11 +101,11 @@ var Bola = (function(vx,vy,xini,yini,radio,angulo) {
 });
 Bola.prototype = new Actor();
 
-var anchoPala=10;
-var altoPala=50;
-var p1 = new Jugador(0,10,10,250,10,50);
-var p2 = new Jugador(0,10,ancho-20,250,10,50);
-var b = new Bola(5,5,250,250,10,0);
+var anchoPala=15;
+var altoPala=100;
+var p1 = new Jugador(0,10,10,200,15,100);
+var p2 = new Jugador(0,10,975,200,15,100);
+var b = new Bola(5,5,490,240,10,0);
 
 
 function update() {

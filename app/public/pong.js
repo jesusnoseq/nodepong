@@ -7,10 +7,6 @@ window.onload = (function() {
 		console.log('Connected!');
 	});
 
-	socket.on('initData', function(data) {
-		console.log(data);
-		console.log(data.FPS);
-	});
 	socket.on('draw', function(data) {
 		console.log(data);
 	});
@@ -21,28 +17,31 @@ window.onload = (function() {
 	
 	socket.on('initData', function(data) {
 		console.log(data);
+		init(data);
 	});
+
 
 });
 
-window.addEventListener('load',init,false);
+//window.addEventListener('load',init,false);
 
 var canvas=null, ctx=null;
+var datos;
 
-function init(){
+
+function init(data)
+{	
+	datos=data;
     canvas=document.getElementById('juego');
-
-    
     ctx=canvas.getContext('2d');
-    
     setFullScreen();
     paint(ctx);
 }
 
 function setFullScreen()
 {
-	canvas.width=1000;
-	canvas.height=500;
+	canvas.width=datos.width;
+	canvas.height=datos.height;
 	
 	var w=window.innerWidth/canvas.width;
     var h=window.innerHeight/canvas.height;
@@ -63,19 +62,21 @@ function setFullScreen()
 function paint(ctx){
 	//FONDO
 	ctx.fillStyle='#000';
-	ctx.fillRect(0,0,1000,500);
+	ctx.fillRect(0,0,datos.width,datos.height);
 	
 	//BARRA DEL JUGADOR 1
     ctx.fillStyle='#0f0';
-    ctx.fillRect(10,200,15,100);
+    ctx.fillRect(datos.p1.x,datos.p1.y,datos.p1.ancho,datos.p1.alto);
     
     //BARRA DEL JUGADOR 2
     ctx.fillStyle='#0f0';
-    ctx.fillRect(975,200,15,100);
+    ctx.fillRect(datos.p2.x,datos.p2.y,datos.p2.ancho,datos.p2.alto);
     
     //BOLITA
     ctx.fillStyle='#f00';
-    ctx.arc(490,240,20,0,(Math.PI/180)*360,true);
+    //ctx.arc(490,240,20,0,(Math.PI/180)*360,true);
+    ctx.arc(datos.bola.x,datos.bola.y,datos.bola.radio,0,(Math.PI/180)*360,true);
+   
     ctx.fill(); //Necesario para rellenar la bola de color y se pueda ver en el escenario
 }
 
