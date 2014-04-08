@@ -70,9 +70,10 @@ function setFullScreen(data) {
 }
 
 function paint(ctx,datos) {
+
 	//FONDO
 	ctx.fillStyle = '#000';
-	ctx.fillRect(0, 0, datos.width, datos.height);
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	//BARRA DEL JUGADOR 1
 	ctx.fillStyle = '#0f0';
