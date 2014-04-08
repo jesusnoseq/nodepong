@@ -113,6 +113,7 @@ function checkCol(){
 }
 
 function update() {
+	checkCol();
 	
 }
 
@@ -137,6 +138,14 @@ io.sockets.on('connection', function(socket) {
 		'bola' : b
 	});
 
+	socket.on('keyPress',function (key){
+		if(myid==0){
+			console.log("player 1 "+key);
+		}else if(myid==1){
+			console.log("player 2 "+key);
+		}
+	});
+
 	if (playerIDCounter == 2) {
 		socket.emit('draw', {
 			'p1' : p1,
@@ -144,6 +153,8 @@ io.sockets.on('connection', function(socket) {
 			'bola' : b
 		});
 
+		
+		
 		socket.on('play', function(data) {
 			console.log(data);
 		});
