@@ -5,7 +5,7 @@ var canvas = null, ctx = null;
 
 window.onload = (function() {
 
-	var socket = io.connect('http://localhost:8080');
+	var socket = io.connect('http://192.168.1.12:8080');
 
 	socket.on('connect', function() {
 		socket.send();
