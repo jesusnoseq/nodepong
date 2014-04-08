@@ -27,7 +27,8 @@ app.get("/", function(req, res) {
 });
 
 var io = require('socket.io').listen(app.listen(port));
-
+io.set('log level', 1);
+io.set('transports', ['websocket']);
 /*
  io.configure('production', function(){
  io.enable('browser client etag');
@@ -37,12 +38,12 @@ var io = require('socket.io').listen(app.listen(port));
  'websocket',
  'flashsocket'
  ]);
- });*/
+ });
 
 process.env.NODE_ENV = 'development';
 io.configure('development', function() {
 	io.set('transports', ['websocket']);
-});
+});*/
 
 /*
  setInterval(function() {
@@ -73,14 +74,21 @@ var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
 	this.alto = alto;
 	this.goles = 0;
 	this.mover = (function(dir) {
+		console.log("Moviendo!!!!! 2");
 		switch(dir) {
 			case KEY_UP:
-				if((this.y+this.alto)<alto)
+				console.log("Moviendo!!!!!!! 3");
+				//if((this.y+this.alto)<alto){
+					console.log("Moviendo!!!!!! 4");
 					this.y += this.vy;
+				//}
 				break;
 			case KEY_DOWN:
-				if(this.y>0)
+				console.log("Moviendo!!!!!!!!!!!! 6");
+				//if(this.y>0){
+					console.log("Moviendo!!!!!!!!!!!! 7");
 					this.y -= this.vy;
+				//}
 				break;
 			default:
 
@@ -96,10 +104,10 @@ var Bola = (function(vx, vy, xini, yini, radio, angulo) {
 	// en radianes
 
 	this.mover = (function() {
-		vy = (float)(v * Math.sin(angulo));
-		vx = (float)(v * Math.cos(angulo));
-		x += vx;
-		y -= vy;
+		vyt = (float)(this.vy * Math.sin(angulo));
+		vxt = (float)(this.vx * Math.cos(angulo));
+		this.x += vxt;
+		this.y -= vyt;
 	});
 
 	this.chocar = (function() {
@@ -128,6 +136,7 @@ function update() {
 }
 
 
+
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
 	var myid = playerIDCounter;
@@ -151,13 +160,14 @@ io.sockets.on('connection', function(socket) {
 		'bola' : b
 	});
 
-	socket.on('keypress', function(key) {
+	socket.on('keypress', function(data) {
+		console.log("Llega "+(data.key)+" de "+myid);
 		if (myid == 0) {
-			p1.mover(KEY_UP);
-			console.log("player 1 " + key);
+			p1.mover((data.key));
+			console.log("player 1 " + (data.key));
 		} else if (myid == 1) {
-			p2.mover(KEY_UP);
-			console.log("player 2 " + key);
+			p2.mover((data.key));
+			console.log("player 2 " + (data.key));
 		}
 	});
 
@@ -173,7 +183,7 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('play', function(data) {
-		console.log(data);
+		//console.log(data);
 	});
 
 	socket.on('disconnect', function() {

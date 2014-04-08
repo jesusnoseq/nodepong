@@ -9,7 +9,7 @@ window.onload = (function() {
 
 	socket.on('connect', function() {
 		socket.send();
-		console.log('Connected!');
+		//console.log('Connected!');
 	});
 
 	socket.on('draw', function(data) {
@@ -22,7 +22,7 @@ window.onload = (function() {
 	});
 
 	socket.on('initData', function(data) {
-		console.log(data);
+		//console.log(data);
 		init(data);
 	});
 
@@ -30,17 +30,13 @@ window.onload = (function() {
 	document.addEventListener('keydown', function(evt) {
 		var lastPress = evt.keyCode;
 		if (lastPress == KEY_UP || lastPress == KEY_DOWN) {
-			console.log("emitiendo");
+			console.log("emitiendo "+lastPress);
 			socket.emit('keypress', {
 				'key' : lastPress
 			});
 		}
 	}, false);
 
-	//Funcion para mandar que tecla es presionada desde el cliente al servidor
-	function keyPress(key) {
-
-	}
 
 });
 
