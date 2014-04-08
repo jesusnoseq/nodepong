@@ -68,6 +68,7 @@ var Actor = (function(vx, vy, xIni, yIni) {
 
 var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
 	Actor.call(this, vx, vy, xini, yini);
+	this.nombre;
 	this.ancho = ancho;
 	this.alto = alto;
 	this.goles = 0;
@@ -111,21 +112,31 @@ var p1 = new Jugador(0, 10, 10, 200, 15, 100);
 var p2 = new Jugador(0, 10, 975, 200, 15, 100);
 var b = new Bola(5, 5, 490, 240, 10, 0);
 
+function resetBola(){
+	
+}
+
 function checkCol() {
 	
+	if(b.x<0){
+		resetBola();
+	}
 }
 
 function update() {
 	checkCol();
 }
 
-setInterval(function() {
-	update();
-}, 1000 / FPS);
 
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
 	var myid = playerIDCounter;
+	if(myid==0){
+		p1.nombre="Player"+myid;
+	}else if(myid==1){
+		p2.nombre="Player"+myid;
+	}
+
 	playerIDCounter++;
 	console.log("New user");
 	console.log("Mi ide es: " + myid);
@@ -150,11 +161,16 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
-	socket.emit('draw', {
-		'p1' : p1,
-		'p2' : p2,
-		'bola' : b
-	});
+	
+	setInterval(function() {
+		update();
+		socket.emit('draw', {
+			'p1' : p1,
+			'p2' : p2,
+			'bola' : b
+		});
+	}, 1000 / FPS);
+
 
 	socket.on('play', function(data) {
 		console.log(data);
