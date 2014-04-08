@@ -55,6 +55,9 @@ var playerIDCounter = 0;
 var FPS = 30;
 var ancho = 1000;
 var alto = 500;
+var KEY_UP = 38;
+var KEY_DOWN = 40;
+
 
 var Actor = (function(vx, vy, xIni, yIni) {
 	this.vx = vx;
@@ -63,17 +66,20 @@ var Actor = (function(vx, vy, xIni, yIni) {
 	this.y = yIni;
 });
 
-var Jugador = (function(vx,vy,xini,yini,ancho,alto) {
-	Actor.call(this,vx,vy,xini,yini);
+var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
+	Actor.call(this, vx, vy, xini, yini);
 	this.ancho = ancho;
 	this.alto = alto;
+	this.goles = 0;
 	this.mover = (function(dir) {
 		switch(dir) {
-			case 1:
-				this.y += this.v;
+			case KEY_UP:
+				if((this.y+this.alto)<alto)
+					this.y += this.vy;
 				break;
-			case 2:
-				this.y -= this.v;
+			case KEY_DOWN:
+				if(this.y>0)
+					this.y -= this.vy;
 				break;
 			default:
 
@@ -82,8 +88,8 @@ var Jugador = (function(vx,vy,xini,yini,ancho,alto) {
 });
 Jugador.prototype = new Actor();
 
-var Bola = (function(vx,vy,xini,yini,radio,angulo) {
-	Actor.call(this,vx,vy,xini,yini);
+var Bola = (function(vx, vy, xini, yini, radio, angulo) {
+	Actor.call(this, vx, vy, xini, yini);
 	this.radio = radio;
 	this.angulo = angulo;
 	// en radianes
@@ -101,33 +107,29 @@ var Bola = (function(vx,vy,xini,yini,radio,angulo) {
 });
 Bola.prototype = new Actor();
 
-var anchoPala=15;
-var altoPala=100;
-var p1 = new Jugador(0,10,10,200,15,100);
-var p2 = new Jugador(0,10,975,200,15,100);
-var b = new Bola(5,5,490,240,10,0);
+var p1 = new Jugador(0, 10, 10, 200, 15, 100);
+var p2 = new Jugador(0, 10, 975, 200, 15, 100);
+var b = new Bola(5, 5, 490, 240, 10, 0);
 
-
-function checkCol(){
-	b.radio;
+function checkCol() {
+	
 }
 
 function update() {
 	checkCol();
-	
 }
 
- setInterval(function() {
- 	update();
- }, 1000/FPS);
- 
+setInterval(function() {
+	update();
+}, 1000 / FPS);
+
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
-	var myid=playerIDCounter;
+	var myid = playerIDCounter;
 	playerIDCounter++;
 	console.log("New user");
-	console.log("Mi ide es: "+myid);
-	
+	console.log("Mi ide es: " + myid);
+
 	socket.emit('initData', {
 		'id' : myid,
 		'width' : ancho,
@@ -138,27 +140,26 @@ io.sockets.on('connection', function(socket) {
 		'bola' : b
 	});
 
-	socket.on('keyPress',function (key){
-		if(myid==0){
-			console.log("player 1 "+key);
-		}else if(myid==1){
-			console.log("player 2 "+key);
+	socket.on('keypress', function(key) {
+		if (myid == 0) {
+			p1.mover(KEY_UP);
+			console.log("player 1 " + key);
+		} else if (myid == 1) {
+			p2.mover(KEY_UP);
+			console.log("player 2 " + key);
 		}
 	});
 
-	if (playerIDCounter == 2) {
-		socket.emit('draw', {
-			'p1' : p1,
-			'p2' : p2,
-			'bola' : b
-		});
+	socket.emit('draw', {
+		'p1' : p1,
+		'p2' : p2,
+		'bola' : b
+	});
 
-		
-		
-		socket.on('play', function(data) {
-			console.log(data);
-		});
-	}
+	socket.on('play', function(data) {
+		console.log(data);
+	});
+
 	socket.on('disconnect', function() {
 		io.sockets.emit('user disconnected');
 	});
