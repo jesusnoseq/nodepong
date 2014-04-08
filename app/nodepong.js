@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-var port = 80;
+var port = 8080;
 
 //app.set('port',process.env.PORT || 80);
 
@@ -14,7 +14,12 @@ app.use(express.cookieParser());
 app.use(express.session({
 	secret : 'esto es secreto'
 }));
-app.use(express.bodyParser());
+
+//Estas dos lineas estan añadidas para que funcione bien el server en mi maquina concretamente en vez de
+//app.use(express.bodyParser());
+app.use(express.json());
+app.use(express.urlencoded());
+
 app.use(express.methodOverride());
 
 app.get("/", function(req, res) {
