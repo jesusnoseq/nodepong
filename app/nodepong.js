@@ -102,8 +102,8 @@ var Bola = (function(vx, vy, xini, yini, radio, angulo) {
 	// en radianes
 
 	this.mover = (function() {
-		vyt = (float)(this.vy * Math.sin(angulo));
-		vxt = (float)(this.vx * Math.cos(angulo));
+		var vyt = (this.vy * Math.sin(angulo));
+		var vxt = (this.vx * Math.cos(angulo));
 		this.x += vxt;
 		this.y -= vyt;
 	});
@@ -119,17 +119,47 @@ var p2 = new Jugador(0, 10, 975, 200, 15, 100);
 var b = new Bola(5, 5, 490, 240, 10, 0);
 
 function resetBola(){
-	
+	b.x=anchoEscenario/2-b.ancho/2;
+	b.y=altoEscenario/2-b.alto/2;
 }
 
 function checkCol() {
-	
+	//goles
 	if(b.x<0){
 		resetBola();
+		p2.goles++;
+	}
+	if(b.x<0){
+		resetBola();
+		p1.goles++;
+	}
+	//colisiones
+	if(b.y<0){
+		b.chocar();
+	}
+	if((b.y+b.radio*2)>altoEscenario){
+		b.chocar();
+	}
+	if(b.y<altoEscenario){
+		b.chocar();
+	}
+	if(b.y<altoEscenario){
+		b.chocar();
+	}
+	if(b.y< p1.y && b.y > p1.y+p1.alto){
+		if(b.x< p1.x && b.x > p1.x+p1.ancho){
+			b.chocar();
+		}
+	}
+	if(b.y< p2.y && b.y > p2.y+p2.alto){
+		if(b.x< p2.x && b.x > p2.x+p2.ancho){
+			b.chocar();
+		}
 	}
 }
 
 function update() {
+	b.mover();
 	checkCol();
 }
 
