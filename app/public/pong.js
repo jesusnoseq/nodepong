@@ -1,6 +1,9 @@
 var KEY_UP=38;
 var KEY_DOWN=40;
 
+var canvas=null, ctx=null;
+var datos;
+
 window.onload = (function() {
 
 	var socket = io.connect('http://localhost:8080');
@@ -26,17 +29,11 @@ window.onload = (function() {
 
 });
 
-//window.addEventListener('load',init,false);
-
-var canvas=null, ctx=null;
-var datos;
-
-
 function init(data)
 {	
-	datos=data;
     canvas=document.getElementById('juego');
     ctx=canvas.getContext('2d');
+    datos=data;
     setFullScreen();
     paint(ctx);
 }
@@ -94,7 +91,7 @@ function keyPress(key) {
 document.addEventListener('keydown',function(evt){
     lastPress=evt.keyCode;
     
-    if(lastPress==KEY_UP || lastPress==KEY_DOWM)
+    if(lastPress==KEY_UP || lastPress==KEY_DOWN)
     {
     	keyPress(lastPress);
     }
