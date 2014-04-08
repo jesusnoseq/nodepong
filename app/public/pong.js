@@ -97,5 +97,10 @@ function paint(ctx,datos) {
 	ctx.font="50px Verdana";
 	ctx.fillStyle = '#00f';
 	ctx.fillText(datos.p1.goles+"-"+datos.p2.goles,445,50); 
+	
+	//USERS
+	ctx.font="10px Verdana";
+	ctx.fillStyle = '#00f';
+	ctx.fillText(datos.p1.nombre+"-"+datos.p2.nombre,445,485); 
 }
 
