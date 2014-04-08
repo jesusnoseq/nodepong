@@ -1,6 +1,6 @@
 window.onload = (function() {
 
-	var socket = io.connect('http://localhost:80');
+	var socket = io.connect('http://localhost:8080');
 
 	socket.on('connect', function() {
 		socket.send();
