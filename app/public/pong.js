@@ -13,7 +13,7 @@ window.onload = (function() {
 	});
 
 	socket.on('draw', function(data) {
-		console.log(data);
+		//console.log(data);
 		paint(ctx,data);
 	});
 
@@ -30,7 +30,7 @@ window.onload = (function() {
 	document.addEventListener('keydown', function(evt) {
 		var lastPress = evt.keyCode;
 		if (lastPress == KEY_UP || lastPress == KEY_DOWN) {
-			console.log("emitiendo "+lastPress);
+			//console.log("emitiendo "+lastPress);
 			socket.emit('keypress', {
 				'key' : lastPress
 			});
