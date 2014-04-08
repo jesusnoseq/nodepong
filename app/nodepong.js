@@ -108,17 +108,27 @@ var p2 = new Jugador(0,10,975,200,15,100);
 var b = new Bola(5,5,490,240,10,0);
 
 
-function update() {
-
+function checkCol(){
+	b.radio;
 }
 
+function update() {
+	
+}
+
+ setInterval(function() {
+ 	update();
+ }, 1000/FPS);
+ 
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
+	var myid=playerIDCounter;
 	playerIDCounter++;
 	console.log("New user");
-
+	console.log("Mi ide es: "+myid);
+	
 	socket.emit('initData', {
-		'id' : playerIDCounter,
+		'id' : myid,
 		'width' : ancho,
 		'height' : alto,
 		'FPS' : FPS,
