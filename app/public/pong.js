@@ -10,6 +10,10 @@ window.onload = (function() {
 		//player = new Player(50, 50);
 	});
 
+	socket.on('initData', function(data) {
+		console.log(data);
+		console.log(data.FPS);
+	});
 	socket.on('draw', function(data) {
 		console.log(data);
 	});
