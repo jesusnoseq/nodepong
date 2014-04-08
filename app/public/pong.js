@@ -1,3 +1,6 @@
+var KEY_UP=38;
+var KEY_DOWN=40;
+
 window.onload = (function() {
 
 	var socket = io.connect('http://localhost:8080');
@@ -80,10 +83,20 @@ function paint(ctx){
     ctx.fill(); //Necesario para rellenar la bola de color y se pueda ver en el escenario
 }
 
-
+//Funcion para mandar que tecla es presionada desde el cliente al servidor
 function keyPress(key) {
 	socket.emit('keypress', {
 		keypress : key
 	});
 }
+
+//Leemos que tecla estamos pulsando
+document.addEventListener('keydown',function(evt){
+    lastPress=evt.keyCode;
+    
+    if(lastPress==KEY_UP || lastPress==KEY_DOWM)
+    {
+    	keyPress(lastPress);
+    }
+},false);
 
