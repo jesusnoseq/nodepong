@@ -119,8 +119,8 @@ var p2 = new Jugador(0, 10, 975, 200, 15, 100);
 var b = new Bola(5, 5, 490, 240, 20, 0);
 
 function resetBola(){
-	b.x=anchoEscenario/2-b.ancho/2;
-	b.y=altoEscenario/2-b.alto/2;
+	b.x=anchoEscenario/2-b.diametro/2;
+	b.y=altoEscenario/2-b.diametro/2;
 }
 
 function checkCol() {
@@ -133,26 +133,23 @@ function checkCol() {
 		resetBola();
 		p1.goles++;
 	}
+	
 	//colisiones
-	if(b.y<0){
+	if(b.y<=0){
 		b.chocar();
 	}
-	if((b.y+b.diametro)>altoEscenario){
+	if((b.y+b.diametro)>=altoEscenario){
 		b.chocar();
 	}
-	if(b.y<altoEscenario){
-		b.chocar();
-	}
-	if(b.y<altoEscenario){
-		b.chocar();
-	}
-	if(b.y< p1.y && b.y > p1.y+p1.alto){
-		if(b.x< p1.x && b.x > p1.x+p1.ancho){
+	
+	//colision con palas
+	if(b.y >= p1.y && b.y <= p1.y+p1.alto){
+		if(b.x >= p1.x && b.x <= p1.x+p1.ancho){
 			b.chocar();
 		}
 	}
-	if(b.y< p2.y && b.y > p2.y+p2.alto){
-		if(b.x< p2.x && b.x > p2.x+p2.ancho){
+	if(b.y >= p2.y && b.y <= p2.y+p2.alto){
+		if(b.x >= p2.x && b.x <= p2.x+p2.ancho){
 			b.chocar();
 		}
 	}
