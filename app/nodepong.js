@@ -95,9 +95,9 @@ var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
 });
 Jugador.prototype = new Actor();
 
-var Bola = (function(vx, vy, xini, yini, radio, angulo) {
+var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
 	Actor.call(this, vx, vy, xini, yini);
-	this.radio = radio;
+	this.diametro = diametro;
 	this.angulo = angulo;
 	// en radianes
 
@@ -125,11 +125,11 @@ function resetBola(){
 
 function checkCol() {
 	//goles
-	if(b.x<0){
+	if((b.x-b.diametro)<0){
 		resetBola();
 		p2.goles++;
 	}
-	if(b.x<0){
+	if(b.x>anchoEscenario){
 		resetBola();
 		p1.goles++;
 	}
@@ -137,7 +137,7 @@ function checkCol() {
 	if(b.y<0){
 		b.chocar();
 	}
-	if((b.y+b.radio*2)>altoEscenario){
+	if((b.y+b.diametro)>altoEscenario){
 		b.chocar();
 	}
 	if(b.y<altoEscenario){
