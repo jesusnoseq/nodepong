@@ -89,24 +89,36 @@ function paint(data) {
 	ctx.fillRect(data.bola.x, data.bola.y, data.bola.diametro, data.bola.diametro);
 
 	//RED
-	//pintaRed();
+	pintaRed();
 	
-	
-	//GOLES
-	ctx.font="50px Verdana";
-	ctx.fillText(data.p1.goles+"-"+data.p2.goles,445,50); 
-	
-	//USERS
-	ctx.font="10px Verdana";
-	ctx.fillText(data.p1.nombre+"-"+data.p2.nombre,445,485); 
+	//DATOS
+	pintaDatos(data);
 }
 
 function pintaRed()
 {
 	var i;
-	for(i=10;i<500;i+20)
+	for(i=10;i<500;i+=20)
+	{
 		ctx.fillRect(495,i,10,10);
+	}
 }
+
+function pintaDatos(data)
+{
+	//GOLES J1
+	ctx.font="75px Arial";
+	ctx.fillText(data.p1.goles,390,75); 
+	
+	//GOLES J2
+	ctx.fillText(data.p2.goles,560,75); 
+	
+	//USERS
+	ctx.font="15px Arial";
+	ctx.fillText(data.p1.nombre,10,485); 
+	ctx.fillText(data.p2.nombre,990-(data.p2.nombre.length)*7,485); //HAY QUE CORREGIR LA SITUACION DEL NOMBRE
+}
+
 
 
 
