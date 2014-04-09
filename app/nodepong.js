@@ -15,7 +15,6 @@ app.use(express.session({
 	secret : 'esto es secreto'
 }));
 
-//Estas dos lineas estan añadidas para que funcione bien el server en mi maquina concretamente en vez de
 //app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded());
@@ -29,28 +28,9 @@ app.get("/", function(req, res) {
 var io = require('socket.io').listen(app.listen(port));
 io.set('log level', 1);
 io.set('transports', ['websocket']);
-/*
- io.configure('production', function(){
- io.enable('browser client etag');
- io.set('log level', 1);
 
- io.set('transports', [
- 'websocket',
- 'flashsocket'
- ]);
- });
 
-process.env.NODE_ENV = 'development';
-io.configure('development', function() {
-	io.set('transports', ['websocket']);
-});*/
 
-/*
- setInterval(function() {
- update();
- player.draw();
- }, 1000/FPS);
- */
 var playerIDCounter = 0;
 //var game=require('./game.js');
 var FPS = 30;
@@ -157,9 +137,22 @@ function update() {
 	checkCol();
 }
 
+
 var users=[];
-var jugador1=0;
-var jugador2=1;
+var jugador1=null;
+var jugador2=null;
+var interval=null;
+
+if(jugador1 && jugador2){
+
+}
+
+function gameStart(){
+	interval=setInterval(update, 1000 / FPS);
+}
+function gameStop(){
+	clearInterval(interval);
+}
 
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
@@ -167,6 +160,10 @@ io.sockets.on('connection', function(socket) {
 	var myid = playerIDCounter;
 
 	playerIDCounter++;
+	if(playerIDCounter==2){
+		gameStart();
+	}
+	
 	console.log("New user");
 	console.log("Mi ide es: " + myid);
 	socket.on('adduser',function(data){
@@ -176,6 +173,7 @@ io.sockets.on('connection', function(socket) {
 			p2.nombre=data.nombre+"#"+myid;
 		}
 		socket.set('nickname', data.nombre/*, function () { socket.emit('ready'); }*/);
+		console.log(socket);
 	});
 	
 
@@ -201,13 +199,15 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	
+	
 	setInterval(function() {
-		update();
-		socket.emit('draw', {
-			'p1' : p1,
-			'p2' : p2,
-			'bola' : b
-		});
+		if(interval){
+			socket.emit('draw', {
+				'p1' : p1,
+				'p2' : p2,
+				'bola' : b
+			});
+		}
 	}, 1000 / FPS);
 
 
