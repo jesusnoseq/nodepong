@@ -4,6 +4,7 @@ var KEY_DOWN = 40;
 var canvas = null, ctx = null;
 
 window.onload = (function() {
+	var nombre = prompt("Please enter your name");
 
 	var socket = io.connect('http://localhost:8080');
 
@@ -86,7 +87,7 @@ function paint(ctx,datos) {
 	//BOLITA
 	ctx.fillStyle = '#f00';
 	//ctx.arc(490,240,20,0,(Math.PI/180)*360,true);
-	ctx.arc(datos.bola.x, datos.bola.y, datos.bola.diametro, 0, (Math.PI / 180) * 360, true);
+	ctx.arc(datos.bola.x, datos.bola.y, datos.bola.radio, 0, (Math.PI / 180) * 360, true);
 	ctx.fill();
 	//Necesario para rellenar la bola de color y se pueda ver en el escenario
 	
