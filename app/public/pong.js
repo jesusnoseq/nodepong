@@ -15,7 +15,8 @@ window.onload = (function() {
 
 	socket.on('draw', function(data) {
 		//console.log(data);
-		paint(ctx,data);
+			
+		paint(data);
 	});
 
 	socket.on('disconnect', function() {
@@ -47,8 +48,10 @@ function init(data) {
 
 	setFullScreen(data);
 	
-	paint(ctx,data);
+	paint(data);
 }
+
+
 
 function setFullScreen(data) {
 	canvas.width = data.width;
@@ -70,35 +73,40 @@ function setFullScreen(data) {
 	canvas.style.marginTop = -(canvas.height * scale) / 2 + 'px';
 }
 
-function paint(ctx,datos) {
-
+function paint(data) {		
 	//FONDO
 	ctx.fillStyle = '#000';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	//BARRA DEL JUGADOR 1
-	ctx.fillStyle = '#0f0';
-	ctx.fillRect(datos.p1.x, datos.p1.y, datos.p1.ancho, datos.p1.alto);
+	ctx.fillStyle = '#fff';
+	ctx.fillRect(data.p1.x, data.p1.y, data.p1.ancho, data.p1.alto);
 
 	//BARRA DEL JUGADOR 2
-	ctx.fillStyle = '#0f0';
-	ctx.fillRect(datos.p2.x, datos.p2.y, datos.p2.ancho, datos.p2.alto);
-
+	ctx.fillRect(data.p2.x, data.p2.y, data.p2.ancho, data.p2.alto);
+	
 	//BOLITA
-	ctx.fillStyle = '#f00';
-	//ctx.arc(490,240,20,0,(Math.PI/180)*360,true);
-	ctx.arc(datos.bola.x, datos.bola.y, datos.bola.diametro/2, 0, (Math.PI / 180) * 360, true);
-	ctx.fill();
-	//Necesario para rellenar la bola de color y se pueda ver en el escenario
+	ctx.fillRect(data.bola.x, data.bola.y, data.bola.diametro, data.bola.diametro);
+
+	//RED
+	//pintaRed();
+	
 	
 	//GOLES
 	ctx.font="50px Verdana";
-	ctx.fillStyle = '#00f';
-	ctx.fillText(datos.p1.goles+"-"+datos.p2.goles,445,50); 
+	ctx.fillText(data.p1.goles+"-"+data.p2.goles,445,50); 
 	
 	//USERS
 	ctx.font="10px Verdana";
-	ctx.fillStyle = '#00f';
-	ctx.fillText(datos.p1.nombre+"-"+datos.p2.nombre,445,485); 
+	ctx.fillText(data.p1.nombre+"-"+data.p2.nombre,445,485); 
 }
+
+function pintaRed()
+{
+	var i;
+	for(i=10;i<500;i+20)
+		ctx.fillRect(495,i,10,10);
+}
+
+
 
