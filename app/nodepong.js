@@ -77,14 +77,11 @@ var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
 		switch(dir) {
 			case KEY_UP:
 				if(this.y>0){
-					console.log("Moviendo arriba !!"+this.y);
 					this.y -= this.vy;
 				}
 				break;
 			case KEY_DOWN:
-				console.log("Moviendo abajo !!"+this.y);
 				if((this.y+this.alto)<altoEscenario){
-					console.log("mueve outa");
 					this.y += this.vy;
 				}
 				break;
