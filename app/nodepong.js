@@ -29,8 +29,6 @@ var io = require('socket.io').listen(app.listen(port));
 io.set('log level', 1);
 io.set('transports', ['websocket']);
 
-
-
 var playerIDCounter = 0;
 //var game=require('./game.js');
 var FPS = 30;
@@ -38,7 +36,10 @@ var anchoEscenario = 1000;
 var altoEscenario = 500;
 var KEY_UP = 38;
 var KEY_DOWN = 40;
-
+var TOP = 0;
+var LEFT = 1;
+var BOT = 2;
+var RIGHT = 3;
 
 var Actor = (function(vx, vy, xIni, yIni) {
 	this.vx = vx;
@@ -49,19 +50,19 @@ var Actor = (function(vx, vy, xIni, yIni) {
 
 var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
 	Actor.call(this, vx, vy, xini, yini);
-	this.nombre;
+	this.nombre
 	this.ancho = ancho;
 	this.alto = alto;
 	this.goles = 0;
 	this.mover = (function(dir) {
 		switch(dir) {
 			case KEY_UP:
-				if(this.y>0){
+				if (this.y > 0) {
 					this.y -= this.vy;
 				}
 				break;
 			case KEY_DOWN:
-				if((this.y+this.alto)<altoEscenario){
+				if ((this.y + this.alto) < altoEscenario) {
 					this.y += this.vy;
 				}
 				break;
@@ -88,61 +89,72 @@ var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
 		//console.log("Actual:"+ this.x+","+this.y);
 	});
 
-	this.chocar = (function() {
-		this.angulo = this.angulo+Math.PI/4; 
+	this.chocar = (function(pos) {
+		switch(pos) {
+			case TOP:
+				this.angulo = this.angulo+Math.PI/4;
+				break;
+			case LEFT:
+				this.angulo = this.angulo +Math.PI/2;
+				break;
+			case BOT:
+				this.angulo = this.angulo+Math.PI/4;
+				console.log("BOT");
+				break;
+			case RIGHT:
+				this.angulo = this.angulo+Math.PI/2;
+				break;
+		}
+
+		//this.angulo+Math.PI/4;
 		// normalizar
-		
+
 	});
 });
 Bola.prototype = new Actor();
 
-
-
-
-var users=[];
-var jugador1=null;
-var jugador2=null;
-var interval=null;
-
-
+var users = [];
+var jugador1 = null;
+var jugador2 = null;
+var interval = null;
 
 var p1 = new Jugador(0, 10, 10, 200, 15, 100);
 var p2 = new Jugador(0, 10, 975, 200, 15, 100);
-var b = new Bola(5, 5, 490, 240, 20, 0);
+var b = new Bola(10, 10, 490, 240, 20, Math.PI/4);
 
-function resetBola(){
-	b.x=anchoEscenario/2-b.diametro/2;
-	b.y=altoEscenario/2-b.diametro/2;
+function resetBola() {
+	b.x = anchoEscenario / 2 - b.diametro / 2;
+	b.y = altoEscenario / 2 - b.diametro / 2;
 }
 
 function checkCol() {
 	//goles
-	if((b.x+b.diametro)<0){
+	if ((b.x + b.diametro) < 0) {
 		resetBola();
 		p2.goles++;
 	}
-	if(b.x>anchoEscenario){
+	if (b.x > anchoEscenario) {
 		resetBola();
 		p1.goles++;
 	}
-	
+
 	//colisiones
-	if(b.y<=0){
-		b.chocar();
+	if (b.y <= 0) {
+		b.chocar(TOP);
 	}
-	if((b.y+b.diametro)>=altoEscenario){
-		b.chocar();
+	if ((b.y + b.diametro) >= altoEscenario) {
+		b.chocar(BOT);
 	}
-	
+
 	//colision con palas
-	if(b.y >= p1.y && b.y <= p1.y+p1.alto){
-		if(b.x >= p1.x && b.x <= p1.x+p1.ancho){
-			b.chocar();
+	if (b.y >= p1.y && (b.y+b.diametro) <= (p1.y + p1.alto)) {
+		if (b.x >= p1.x && b.x <= (p1.x + p1.ancho)) {
+			b.chocar(LEFT);
 		}
 	}
-	if(b.y >= p2.y && b.y <= p2.y+p2.alto){
-		if(b.x >= p2.x && b.x <= p2.x+p2.ancho){
-			b.chocar();
+	if (b.y >= p2.y && b.y <= p2.y + p2.alto) {
+		if ((b.x+b.diametro) <= (p2.x+p2.ancho) && (b.x+b.diametro) <= p2.x) {
+			b.chocar(RIGHT);
 		}
 	}
 }
@@ -152,16 +164,15 @@ function update() {
 	checkCol();
 }
 
-
-
-if(jugador1 && jugador2){
+if (jugador1 && jugador2) {
 
 }
 
-function gameStart(){
-	interval=setInterval(update, 1000 / FPS);
+function gameStart() {
+	interval = setInterval(update, 1000 / FPS);
 }
-function gameStop(){
+
+function gameStop() {
 	clearInterval(interval);
 }
 
@@ -171,22 +182,21 @@ io.sockets.on('connection', function(socket) {
 	var myid = playerIDCounter;
 
 	playerIDCounter++;
-	if(playerIDCounter==2){
+	if (playerIDCounter == 2) {
 		gameStart();
 	}
-	
+
 	//console.log("New user");
 	console.log("Mi ide es: " + myid);
-	socket.on('adduser',function(data){
-		if(myid==0){
-			p1.nombre=data.nombre+"#"+myid;
-		}else if(myid==1){
-			p2.nombre=data.nombre+"#"+myid;
+	socket.on('adduser', function(data) {
+		if (myid == 0) {
+			p1.nombre = data.nombre + "#" + myid;
+		} else if (myid == 1) {
+			p2.nombre = data.nombre + "#" + myid;
 		}
 		socket.set('nickname', data.nombre/*, function () { socket.emit('ready'); }*/);
 		//console.log(socket);
 	});
-	
 
 	socket.emit('initData', {
 		'id' : myid,
@@ -199,7 +209,7 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('keypress', function(data) {
-		console.log("Llega "+(data.key)+" de "+myid);
+		console.log("Llega " + (data.key) + " de " + myid);
 		if (myid == 0) {
 			p1.mover((data.key));
 			console.log("player 1 " + (data.key));
@@ -209,10 +219,8 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
-	
-	
 	setInterval(function() {
-		if(interval){
+		if (interval) {
 			socket.emit('draw', {
 				'p1' : p1,
 				'p2' : p2,
@@ -221,13 +229,12 @@ io.sockets.on('connection', function(socket) {
 		}
 	}, 1000 / FPS);
 
-
 	socket.on('play', function(data) {
 		//console.log(data);
 	});
 
 	socket.on('disconnect', function() {
-		io.sockets.emit('user'+myid+'disconnected');
+		io.sockets.emit('user' + myid + 'disconnected');
 	});
 
 });
