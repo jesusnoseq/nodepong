@@ -9,7 +9,7 @@ window.onload = (function() {
 	var socket = io.connect('http://localhost:8080');
 
 	socket.on('connect', function() {
-		socket.send();
+		socket.emit('adduser',{'nombre':nombre});
 		//console.log('Connected!');
 	});
 

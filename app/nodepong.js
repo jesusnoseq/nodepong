@@ -160,20 +160,27 @@ function update() {
 	checkCol();
 }
 
-
+var users=[];
+var jugador1=0;
+var jugador2=1;
 
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
+	console.log(socket);
 	var myid = playerIDCounter;
-	if(myid==0){
-		p1.nombre="Player"+myid;
-	}else if(myid==1){
-		p2.nombre="Player"+myid;
-	}
 
 	playerIDCounter++;
 	console.log("New user");
 	console.log("Mi ide es: " + myid);
+	socket.on('adduser',function(data){
+		if(myid==0){
+			p1.nombre=data.nombre+"#"+myid;
+		}else if(myid==1){
+			p2.nombre=data.nombre+"#"+myid;
+		}
+		socket.set('nickname', data.nombre/*, function () { socket.emit('ready'); }*/);
+	});
+	
 
 	socket.emit('initData', {
 		'id' : myid,
@@ -212,7 +219,7 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', function() {
-		io.sockets.emit('user disconnected');
+		io.sockets.emit('user'+myid+'disconnected');
 	});
 
 });
