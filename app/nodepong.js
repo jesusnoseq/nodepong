@@ -79,17 +79,32 @@ var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
 	// en radianes
 
 	this.mover = (function() {
-		var vyt = (this.vy * Math.sin(angulo));
-		var vxt = (this.vx * Math.cos(angulo));
+		var vyt = (this.vy * Math.sin(this.angulo));
+		var vxt = (this.vx * Math.cos(this.angulo));
 		this.x += vxt;
-		this.y -= vyt;
+		this.y += vyt;
+		//console.log("angulo: "+this.angulo );
+		//console.log( vxt+" --"+vyt + " || "+Math.sin(angulo)+" -- "+Math.cos(angulo));
+		//console.log("Actual:"+ this.x+","+this.y);
 	});
 
 	this.chocar = (function() {
-		this.angulo *= -1;
+		this.angulo = this.angulo+Math.PI/4; 
+		// normalizar
+		
 	});
 });
 Bola.prototype = new Actor();
+
+
+
+
+var users=[];
+var jugador1=null;
+var jugador2=null;
+var interval=null;
+
+
 
 var p1 = new Jugador(0, 10, 10, 200, 15, 100);
 var p2 = new Jugador(0, 10, 975, 200, 15, 100);
@@ -138,10 +153,6 @@ function update() {
 }
 
 
-var users=[];
-var jugador1=null;
-var jugador2=null;
-var interval=null;
 
 if(jugador1 && jugador2){
 
@@ -156,7 +167,7 @@ function gameStop(){
 
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
-	console.log(socket);
+	//console.log(socket);
 	var myid = playerIDCounter;
 
 	playerIDCounter++;
@@ -164,7 +175,7 @@ io.sockets.on('connection', function(socket) {
 		gameStart();
 	}
 	
-	console.log("New user");
+	//console.log("New user");
 	console.log("Mi ide es: " + myid);
 	socket.on('adduser',function(data){
 		if(myid==0){
@@ -173,7 +184,7 @@ io.sockets.on('connection', function(socket) {
 			p2.nombre=data.nombre+"#"+myid;
 		}
 		socket.set('nickname', data.nombre/*, function () { socket.emit('ready'); }*/);
-		console.log(socket);
+		//console.log(socket);
 	});
 	
 

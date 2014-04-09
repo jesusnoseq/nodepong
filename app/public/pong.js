@@ -1,12 +1,14 @@
+var url="http://192.168.1.12:8080";
+
+
 var KEY_UP = 38;
 var KEY_DOWN = 40;
-
 var canvas = null, ctx = null;
 
 window.onload = (function() {
 	var nombre = prompt("Please enter your name");
 
-	var socket = io.connect('http://localhost:8080');
+	var socket = io.connect(url);
 
 	socket.on('connect', function() {
 		socket.emit('adduser',{'nombre':nombre});
