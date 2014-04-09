@@ -116,7 +116,7 @@ Bola.prototype = new Actor();
 
 var p1 = new Jugador(0, 10, 10, 200, 15, 100);
 var p2 = new Jugador(0, 10, 975, 200, 15, 100);
-var b = new Bola(5, 5, 490, 240, 10, 0);
+var b = new Bola(5, 5, 490, 240, 20, 0);
 
 function resetBola(){
 	b.x=anchoEscenario/2-b.ancho/2;
@@ -125,7 +125,7 @@ function resetBola(){
 
 function checkCol() {
 	//goles
-	if((b.x-b.diametro)<0){
+	if((b.x+b.diametro)<0){
 		resetBola();
 		p2.goles++;
 	}
@@ -159,8 +159,8 @@ function checkCol() {
 }
 
 function update() {
-	b.mover();
-	checkCol();
+	//b.mover();
+	//checkCol();
 }
 
 
