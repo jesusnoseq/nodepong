@@ -159,8 +159,8 @@ function checkCol() {
 }
 
 function update() {
-	//b.mover();
-	//checkCol();
+	b.mover();
+	checkCol();
 }
 
 
