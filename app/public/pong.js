@@ -12,12 +12,9 @@ window.onload = (function() {
 
 	socket.on('connect', function() {
 		socket.emit('adduser',{'nombre':nombre});
-		//console.log('Connected!');
 	});
 
 	socket.on('draw', function(data) {
-		//console.log(data);
-			
 		paint(data);
 	});
 
@@ -26,7 +23,6 @@ window.onload = (function() {
 	});
 
 	socket.on('initData', function(data) {
-		//console.log(data);
 		init(data);
 	});
 
@@ -34,7 +30,6 @@ window.onload = (function() {
 	document.addEventListener('keydown', function(evt) {
 		var lastPress = evt.keyCode;
 		if (lastPress == KEY_UP || lastPress == KEY_DOWN) {
-			//console.log("emitiendo "+lastPress);
 			socket.emit('keypress', {
 				'key' : lastPress
 			});
@@ -43,6 +38,7 @@ window.onload = (function() {
 
 
 });
+
 
 function init(data) {
 	canvas = document.getElementById('juego');
@@ -120,7 +116,3 @@ function pintaDatos(data)
 	ctx.fillText(data.p1.nombre,10,485); 
 	ctx.fillText(data.p2.nombre,990-(data.p2.nombre.length)*7,485); //HAY QUE CORREGIR LA SITUACION DEL NOMBRE
 }
-
-
-
-
