@@ -29,19 +29,19 @@ var io = require('socket.io').listen(app.listen(port));
 io.set('log level', 1);
 io.set('transports', ['websocket']);
 
-var Actor = (function(w, h, x, y, vx, vy) {
-	this.w = w;
-	this.h = h;
+var Actor = (function(x, y, w, h, vx, vy) {
 	this.x = x;
 	this.y = y;
+	this.w = w;
+	this.h = h;
 	this.vx = vx;
 	this.vy = vy;
 });
 
-var Paddle = (function(w, h, x, y, vx, vy) {
-	Actor.call(this, w, h, x, y, vx, vy);
+var Paddle = (function(x, y, w, h, vx, vy) {
+	Actor.call(this, x, y, w, h, vx, vy);
 	this.points = 0;
-	this.nick
+	this.nick;
 	this.move = (function(dir) {
 		switch(dir) {
 			case KEY_UP:
@@ -61,8 +61,8 @@ var Paddle = (function(w, h, x, y, vx, vy) {
 });
 Paddle.prototype = new Actor();
 
-var Ball = (function(w, h, x, y, vx, vy, angulo) {
-	Actor.call(this, w, h, x, y, vx, vy);
+var Ball = (function(x, y, w, h, vx, vy, angle) {
+	Actor.call(this, x, y, w, h, vx, vy);
 	this.angle = angle;
 	// en radianes
 
@@ -80,6 +80,7 @@ var Ball = (function(w, h, x, y, vx, vy, angulo) {
 		switch(pos) {
 			case TOP:
 				this.angle += this.angle + Math.PI / 2;
+				console.log("TOP");
 				break;
 			case LEFT:
 				this.angle += this.angle + Math.PI / 2;
@@ -105,7 +106,6 @@ function resetBall() {
 	b.y = W / 2 - b.w / 2;
 }
 
-
 function collides(a, b) {
 	if (Math.abs(a.x - b.x) < a.w + b.w) {
 		if (Math.abs(a.y - b.y) < a.h + b.h) {
@@ -115,7 +115,6 @@ function collides(a, b) {
 
 	return false;
 }
-
 
 function checkCollisions() {
 	//goles
@@ -141,7 +140,7 @@ function checkCollisions() {
 	if (collides(p1, b)) {
 		b.collide(LEFT);
 	}
-	
+
 	if (collides(p2, b)) {
 		b.collide(RIGHT);
 	}
@@ -175,9 +174,14 @@ var TOP = 0;
 var LEFT = 1;
 var BOT = 2;
 var RIGHT = 3;
-var p1 = new Paddle(20, 100, 10, H / 2 - 100 / 2, 10);
-var p2 = new Paddle(20, 100, W - 20, H / 2 - 100 / 2, 10);
-var b = new Paddle(20, 20, W / 2 - 10, H / 2 - 10, 15, 15, 0);
+
+var paddleW = 100;
+var paddleH = 15;
+var ballDiam = 20;
+
+var p1 = new Paddle(W / 2 - 100 / 2, 20, 100, 10, 10);
+var p2 = new Paddle(W - 20, H / 2 - 100 / 2, 20, 100, 10);
+var b = new Paddle(W / 2 - 10, H / 2 - 10, 20, 20, 15, 15, 0);
 
 var player1 = null;
 var player2 = null;
