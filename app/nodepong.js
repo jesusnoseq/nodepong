@@ -61,7 +61,7 @@ var Paddle = (function(w, h, x, y, vx, vy) {
 Paddle.prototype = new Actor();
 
 var Ball = (function(w, h, x, y, vx, vy, angulo) {
-	Actor.call(this, w, h, x, y, vx, vy);angle
+	Actor.call(this, w, h, x, y, vx, vy);
 	this.angle = angle;
 	// en radianes
 
@@ -117,21 +117,21 @@ function checkCollisions() {
 
 	//colisiones
 	if (b.y <= 0) {
-		b.chocar(TOP);
+		b.collide(TOP);
 	}
 	if ((b.y + b.h) >= H) {
-		b.chocar(BOT);
+		b.collide(BOT);
 	}
 
 	//colision con palas
 	if (b.y >= p1.y && (b.y + b.h) <= (p1.y + p1.h)) {
 		if (b.x >= p1.x && b.x <= (p1.x + p1.w)) {
-			b.chocar(LEFT);
+			b.collide(LEFT);
 		}
 	}
 	if (b.y >= p2.y && b.y <= p2.y + p2.h) {
 		if ((b.x + b.w) <= (p2.x + p2.w) && (b.x + b.w) <= p2.x) {
-			b.chocar(RIGHT);
+			b.collide(RIGHT);
 		}
 	}
 }
@@ -164,10 +164,9 @@ var TOP = 0;
 var LEFT = 1;
 var BOT = 2;
 var RIGHT = 3;
-
-var p1 = new Paddle(0, 10, 10, 200, 15, 100);
-var p2 = new Paddle(0, 10, 975, 200, 15, 100);
-var b = new Paddle(10, 10, 490, 240, 20, Math.PI / 4);
+var p1 = new Paddle(20, 100, 10, H / 2 - 100 / 2, 10);
+var p2 = new Paddle(20, 100, W - 20, H / 2 - 100 / 2, 10);
+var b = new Paddle(20, 20, W / 2 - 10, H / 2 - 10, 15, 15, 0);
 
 var player1 = null;
 var player2 = null;
