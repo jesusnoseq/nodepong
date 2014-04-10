@@ -1,0 +1,7 @@
+arreglar colisiones
+arreglar rebotes
+hacer colas
+Documentar
+	...
+multisala
+mejorar colisiones

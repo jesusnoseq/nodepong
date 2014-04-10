@@ -29,17 +29,7 @@ var io = require('socket.io').listen(app.listen(port));
 io.set('log level', 1);
 io.set('transports', ['websocket']);
 
-var playerIDCounter = 0;
-//var game=require('./game.js');
-var FPS = 30;
-var anchoEscenario = 1000;
-var altoEscenario = 500;
-var KEY_UP = 38;
-var KEY_DOWN = 40;
-var TOP = 0;
-var LEFT = 1;
-var BOT = 2;
-var RIGHT = 3;
+
 
 var Actor = (function(vx, vy, xIni, yIni) {
 	this.vx = vx;
@@ -90,19 +80,20 @@ var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
 	});
 
 	this.chocar = (function(pos) {
+
 		switch(pos) {
 			case TOP:
-				this.angulo = this.angulo+Math.PI/4;
+				this.angulo += this.angulo + Math.PI / 2;
 				break;
 			case LEFT:
-				this.angulo = this.angulo +Math.PI/2;
+				this.angulo += this.angulo + Math.PI / 2;
 				break;
 			case BOT:
-				this.angulo = this.angulo+Math.PI/4;
+				this.angulo += this.angulo + Math.PI / 2;
 				console.log("BOT");
 				break;
 			case RIGHT:
-				this.angulo = this.angulo+Math.PI/2;
+				this.angulo += this.angulo + Math.PI / 2;
 				break;
 		}
 
@@ -113,14 +104,7 @@ var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
 });
 Bola.prototype = new Actor();
 
-var users = [];
-var jugador1 = null;
-var jugador2 = null;
-var interval = null;
 
-var p1 = new Jugador(0, 10, 10, 200, 15, 100);
-var p2 = new Jugador(0, 10, 975, 200, 15, 100);
-var b = new Bola(10, 10, 490, 240, 20, Math.PI/4);
 
 function resetBola() {
 	b.x = anchoEscenario / 2 - b.diametro / 2;
@@ -147,13 +131,13 @@ function checkCol() {
 	}
 
 	//colision con palas
-	if (b.y >= p1.y && (b.y+b.diametro) <= (p1.y + p1.alto)) {
+	if (b.y >= p1.y && (b.y + b.diametro) <= (p1.y + p1.alto)) {
 		if (b.x >= p1.x && b.x <= (p1.x + p1.ancho)) {
 			b.chocar(LEFT);
 		}
 	}
 	if (b.y >= p2.y && b.y <= p2.y + p2.alto) {
-		if ((b.x+b.diametro) <= (p2.x+p2.ancho) && (b.x+b.diametro) <= p2.x) {
+		if ((b.x + b.diametro) <= (p2.x + p2.ancho) && (b.x + b.diametro) <= p2.x) {
 			b.chocar(RIGHT);
 		}
 	}
@@ -176,6 +160,35 @@ function gameStop() {
 	clearInterval(interval);
 }
 
+function gameReset() {
+	resetBola();
+	p1.goles = 0;
+	p2.goles = 0;
+}
+
+
+
+var FPS = 30;
+var anchoEscenario = 1000;
+var altoEscenario = 500;
+var KEY_UP = 38;
+var KEY_DOWN = 40;
+var TOP = 0;
+var LEFT = 1;
+var BOT = 2;
+var RIGHT = 3;
+
+var p1 = new Jugador(0, 10, 10, 200, 15, 100);
+var p2 = new Jugador(0, 10, 975, 200, 15, 100);
+var b = new Bola(10, 10, 490, 240, 20, Math.PI / 4);
+
+var jugador1 = null;
+var jugador2 = null;
+var users = [];
+
+var playerIDCounter = 0;
+//var game=require('./game.js');
+
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerIDCounter);
 	//console.log(socket);
@@ -194,7 +207,7 @@ io.sockets.on('connection', function(socket) {
 		} else if (myid == 1) {
 			p2.nombre = data.nombre + "#" + myid;
 		}
-		socket.set('nickname', data.nombre/*, function () { socket.emit('ready'); }*/);
+		socket.set('nombre', data.nombre/*, function () { socket.emit('ready'); }*/);
 		//console.log(socket);
 	});
 
@@ -220,13 +233,12 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	setInterval(function() {
-		if (interval) {
-			socket.emit('draw', {
-				'p1' : p1,
-				'p2' : p2,
-				'bola' : b
-			});
-		}
+		update();
+		socket.broadcast.emit('draw', {
+			'p1' : p1,
+			'p2' : p2,
+			'bola' : b
+		});
 	}, 1000 / FPS);
 
 	socket.on('play', function(data) {
