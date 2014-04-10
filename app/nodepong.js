@@ -12,7 +12,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(express.cookieParser());
 app.use(express.session({
-	secret : 'esto es secreto'
+	secret : 'this is a secret'
 }));
 
 //app.use(express.bodyParser());
@@ -41,6 +41,7 @@ var Actor = (function(w, h, x, y, vx, vy) {
 var Paddle = (function(w, h, x, y, vx, vy) {
 	Actor.call(this, w, h, x, y, vx, vy);
 	this.points = 0;
+	this.nick;
 	this.move = (function(dir) {
 		switch(dir) {
 			case KEY_UP:

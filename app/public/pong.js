@@ -6,7 +6,7 @@ var KEY_DOWN = 40;
 var canvas = null, ctx = null;
 
 window.onload = (function() {
-	var nombre = prompt("Please enter your name");
+	var nombre = prompt("Please enter your name:");
 
 	var socket = io.connect(url);
 
