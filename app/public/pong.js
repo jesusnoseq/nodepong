@@ -11,7 +11,7 @@ window.onload = (function() {
 	var socket = io.connect(url);
 
 	socket.on('connect', function() {
-		socket.emit('adduser',{'nombre':nombre});
+		socket.emit('adduser',{'nick':nick});
 	});
 
 	socket.on('draw', function(data) {
@@ -78,13 +78,13 @@ function paint(data) {
 
 	//BARRA DEL JUGADOR 1
 	ctx.fillStyle = '#fff';
-	ctx.fillRect(data.p1.x, data.p1.y, data.p1.ancho, data.p1.alto);
+	ctx.fillRect(data.p1.x, data.p1.y, data.p1.w, data.p1.h);
 
 	//BARRA DEL JUGADOR 2
-	ctx.fillRect(data.p2.x, data.p2.y, data.p2.ancho, data.p2.alto);
+	ctx.fillRect(data.p2.x, data.p2.y, data.p2.w, data.p2.h);
 	
 	//BOLITA
-	ctx.fillRect(data.bola.x, data.bola.y, data.bola.diametro, data.bola.diametro);
+	ctx.fillRect(data.ball.x, data.ball.y, data.ball.w, data.ball.h);
 
 	//RED
 	paintLet();
@@ -106,13 +106,13 @@ function paintData(data)
 {
 	//GOLES J1
 	ctx.font="75px Arial";
-	ctx.fillText(data.p1.goles,390,75); 
+	ctx.fillText(data.p1.points,390,75); 
 	
 	//GOLES J2
-	ctx.fillText(data.p2.goles,560,75); 
+	ctx.fillText(data.p2.points,560,75); 
 	
 	//USERS
 	ctx.font="15px Arial";
-	ctx.fillText(data.p1.nombre,10,485); 
-	ctx.fillText(data.p2.nombre,990-(data.p2.nombre.length)*7,485); 
+	ctx.fillText(data.p1.nick,10,485); 
+	ctx.fillText(data.p2.nick,990-(data.p2.nick.length)*7,485); 
 }

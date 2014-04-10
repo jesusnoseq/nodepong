@@ -15,7 +15,6 @@ app.use(express.session({
 	secret : 'this is a secret'
 }));
 
-//app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded());
 
@@ -25,5 +24,6 @@ app.get("/", function(req, res) {
 	res.render("index");
 });
 
+app.listen(port);
 
 console.log("Listening on port " + port);
