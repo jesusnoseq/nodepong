@@ -175,13 +175,13 @@ var LEFT = 1;
 var BOT = 2;
 var RIGHT = 3;
 
-var paddleW = 100;
-var paddleH = 15;
+var paddleW = 15;
+var paddleH = 100;
 var ballDiam = 20;
 
-var p1 = new Paddle(W / 2 - 100 / 2, 20, 100, 10, 10);
-var p2 = new Paddle(W - 20, H / 2 - 100 / 2, 20, 100, 10);
-var b = new Paddle(W / 2 - 10, H / 2 - 10, 20, 20, 15, 15, 0);
+var p1 = new Paddle(10 					, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
+var p2 = new Paddle(W-10-paddleW		, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
+var b  = new Paddle(W / 2 - ballDiam/2	, H/2-ballDiam/2, ballDiam, ballDiam, 15, 15, 0);
 
 var player1 = null;
 var player2 = null;
