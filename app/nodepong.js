@@ -29,6 +29,18 @@ var io = require('socket.io').listen(app.listen(port));
 io.set('log level', 1);
 io.set('transports', ['websocket']);
 
+
+
+var FPS = 30;
+var W = 1000;
+var H = 500;
+var KEY_UP = 38;
+var KEY_DOWN = 40;
+var TOP = 0;
+var LEFT = 1;
+var BOT = 2;
+var RIGHT = 3;
+
 var Actor = (function(x, y, w, h, vx, vy) {
 	this.x = x;
 	this.y = y;
@@ -63,8 +75,9 @@ Paddle.prototype = new Actor();
 
 var Ball = (function(x, y, w, h, vx, vy, angle) {
 	Actor.call(this, x, y, w, h, vx, vy);
-	this.angle = angle;
 	// en radianes
+	this.angle = angle;
+
 
 	this.move = (function() {
 		var vyt = (this.vy * Math.sin(this.angle));
@@ -77,55 +90,99 @@ var Ball = (function(x, y, w, h, vx, vy, angle) {
 	});
 
 	this.collide = (function(pos) {
+		var dir=RIGHT;
+		//this.angle=this.angle%(Math.PI*2);
+		//if(this.angle>Math.PI/2 && this.angle < (Math.PI+Math.PI/2)){
+			//dir=LEFT;
+		//}
+		console.log("Dir: "+ dir+"   "+this.angle);
+		
+		/*if(pos==TOP && dir==LEFT){
+			this.angle += Math.PI / 2;
+		}
+		if(pos==TOP && dir==RIGHT){
+			this.angle -= Math.PI / 2;
+		}
+		if(pos==BOT && dir==LEFT){
+			this.angle -= Math.PI / 2;
+		}
+		if(pos==BOT && dir==RIGHT){
+			this.angle += Math.PI / 2;
+		}
+		if(pos==RIGHT){
+			this.angle += Math.PI/2;
+		}
+		if(pos==LEFT){
+			this.angle += Math.PI/2;
+		}*/
+		
 		switch(pos) {
 			case TOP:
-				this.angle += this.angle + Math.PI / 2;
-				console.log("TOP");
+				this.angle = -this.angle;
+				//console.log("TOP");
 				break;
 			case LEFT:
-				this.angle += this.angle + Math.PI / 2;
+				if (this.angle>0){
+					this.angle -= Math.PI / 2;
+				}else{
+					this.angle += Math.PI / 2;
+				}
 				break;
 			case BOT:
-				this.angle += this.angle + Math.PI / 2;
-				console.log("BOT");
+				this.angle= -this.angle;
+				//console.log("BOT");
 				break;
 			case RIGHT:
-				this.angle += this.angle + Math.PI / 2;
+				if (this.angle>0){
+					this.angle += Math.PI / 2;
+				}else{
+					this.angle -= Math.PI / 2;
+				}
 				break;
 		}
-
-		//this.angulo+Math.PI/4;
-		// normalizar
-
 	});
 });
 Ball.prototype = new Actor();
 
-function resetBall() {
-	b.x = W / 2 - b.h / 2;
-	b.y = W / 2 - b.w / 2;
-}
+function resetBall(dir) {
+	b.x = W / 2 - b.w / 2;
+	b.y = H / 2 - b.h / 2;
+	if(dir==LEFT){
+		b.angle=-Math.PI/4;
+	}else{
+		b.angle=(Math.PI/4)*3;
+	}
 
+}
 function collides(a, b) {
-	if (Math.abs(a.x - b.x) < a.w + b.w) {
-		if (Math.abs(a.y - b.y) < a.h + b.h) {
+    return !(
+        ((a.y + a.h) < (b.y)) ||
+        (a.y > (b.y + b.h)) ||
+        ((a.x + a.w) < b.x) ||
+        (a.x > (b.x + b.w))
+    );
+}
+/*
+function collides(aa, bb) {
+	if (Math.abs(aa.x - bb.x) < aa.w + bb.w) {
+		if (Math.abs(aa.y - bb.y) < aa.h + bb.h) {
 			return true;
 		}
 	}
 
 	return false;
-}
+}*/
 
 function checkCollisions() {
 	//goles
 	if ((b.x + b.w) < 0) {
-		resetBall();
-		p2.poins++;
+		resetBall(LEFT);
+		p2.points++;
 	}
 
 	if (b.x > W) {
-		resetBall();
-		p1.poins++;
+		resetBall(RIGHT);
+		p1.points++;
 	}
 
 	//colisiones
@@ -146,17 +203,14 @@ function checkCollisions() {
 	}
 }
 
-function update() {
-	b.move();
-	checkCollisions();
-}
-
 function gameStart() {
 	interval = setInterval(update, 1000 / FPS);
+	gameStatus=1;
 }
 
 function gameStop() {
 	clearInterval(interval);
+	gameStatus=0;
 }
 
 function gameReset() {
@@ -165,15 +219,10 @@ function gameReset() {
 	p2.points = 0;
 }
 
-var FPS = 30;
-var W = 1000;
-var H = 500;
-var KEY_UP = 38;
-var KEY_DOWN = 40;
-var TOP = 0;
-var LEFT = 1;
-var BOT = 2;
-var RIGHT = 3;
+
+
+var gameStatus=0;
+var interval;
 
 var paddleW = 15;
 var paddleH = 100;
@@ -181,11 +230,18 @@ var ballDiam = 20;
 
 var p1 = new Paddle(10 					, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
 var p2 = new Paddle(W-10-paddleW		, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
-var b  = new Paddle(W / 2 - ballDiam/2	, H/2-ballDiam/2, ballDiam, ballDiam, 15, 15, 0);
+var b  = new Ball  (W / 2 - ballDiam/2	, H/2-ballDiam/2, ballDiam, ballDiam, 10, 10, -Math.PI/4);
 
 var player1 = null;
 var player2 = null;
 var users = [];
+
+
+function update() {
+	b.move();
+	checkCollisions();
+}
+
 
 var playerIDCounter = 0;
 //var game=require('./game.js');
@@ -196,9 +252,7 @@ io.sockets.on('connection', function(socket) {
 	var myid = playerIDCounter;
 
 	playerIDCounter++;
-	if (playerIDCounter == 2) {
-		gameStart();
-	}
+	
 
 	//console.log("New user");
 	console.log("Mi ide es: " + myid);
@@ -229,18 +283,29 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
+
+	if (playerIDCounter == 2) {
+		gameStart();
+		/*setInterval(function() {
+				console.log("Intervalo "+ myid);
+				update();
+				socket.broadcast.emit('draw', {
+					'p1' : p1,
+					'p2' : p2,
+					'ball' : b
+				});
+		}, 1000 / FPS);*/
+	}
 	setInterval(function() {
-		update();
-		socket.broadcast.emit('draw', {
-			'p1' : p1,
-			'p2' : p2,
-			'ball' : b
-		});
+		if(gameStatus==1){
+			socket.emit('draw', {
+				'p1' : p1,
+				'p2' : p2,
+				'ball' : b
+			});
+		}
 	}, 1000 / FPS);
 
-	socket.on('play', function(data) {
-		//console.log(data);
-	});
 
 	socket.on('disconnect', function() {
 		io.sockets.emit('User ' + myid + 'disconnected');

@@ -6,7 +6,7 @@ var KEY_DOWN = 40;
 var canvas = null, ctx = null;
 
 window.onload = (function() {
-	var nombre = prompt("Please enter your name:");
+	var nick = prompt("Please enter your name:");
 
 	var socket = io.connect(url);
 
@@ -15,7 +15,8 @@ window.onload = (function() {
 	});
 
 	socket.on('draw', function(data) {
-		paint(data);
+		paint(data,true);
+		console.log("recibiendo");
 	});
 
 	socket.on('disconnect', function() {
@@ -41,12 +42,12 @@ window.onload = (function() {
 
 
 function init(data) {
-	canvas = document.getElementById('juego');
+	canvas = document.getElementById('game');
 	ctx = canvas.getContext('2d');
 
 	setFullScreen(data);
 	
-	paint(data);
+	paint(data,false);
 }
 
 
@@ -71,7 +72,7 @@ function setFullScreen(data) {
 	canvas.style.marginTop = -(canvas.height * scale) / 2 + 'px';
 }
 
-function paint(data) {		
+function paint(data,panels) {		
 	//FONDO
 	ctx.fillStyle = '#000';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -90,7 +91,10 @@ function paint(data) {
 	paintLet();
 	
 	//DATOS
-	paintData();
+	if(panels){
+		paintData(data);	
+	}
+	
 }
 
 function paintLet()
