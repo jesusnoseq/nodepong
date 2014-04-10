@@ -31,18 +31,18 @@ io.set('transports', ['websocket']);
 
 
 
-var Actor = (function(vx, vy, xIni, yIni) {
+var Actor = (function(w,h,vx, vy, xIni, yIni) {
 	this.vx = vx;
 	this.vy = vy;
 	this.x = xIni;
 	this.y = yIni;
+	this.w = w;
+	this.h = h;
 });
 
-var Jugador = (function(vx, vy, xini, yini, ancho, alto) {
-	Actor.call(this, vx, vy, xini, yini);
-	this.nombre
-	this.ancho = ancho;
-	this.alto = alto;
+var Jugador = (function(vx, vy, xini, yini, w, h) {
+	Actor.call(this, w, h, vx, vy, xini, yini);
+	this.nombre;
 	this.goles = 0;
 	this.mover = (function(dir) {
 		switch(dir) {
