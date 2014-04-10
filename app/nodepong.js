@@ -41,7 +41,7 @@ var Actor = (function(w, h, x, y, vx, vy) {
 var Paddle = (function(w, h, x, y, vx, vy) {
 	Actor.call(this, w, h, x, y, vx, vy);
 	this.points = 0;
-	this.nick;
+	this.nick
 	this.move = (function(dir) {
 		switch(dir) {
 			case KEY_UP:
@@ -100,10 +100,22 @@ var Ball = (function(w, h, x, y, vx, vy, angulo) {
 });
 Ball.prototype = new Actor();
 
-function resetBola() {
+function resetBall() {
 	b.x = W / 2 - b.h / 2;
 	b.y = W / 2 - b.w / 2;
 }
+
+
+function collides(a, b) {
+	if (Math.abs(a.x - b.x) < a.w + b.w) {
+		if (Math.abs(a.y - b.y) < a.h + b.h) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 function checkCollisions() {
 	//goles
@@ -111,6 +123,7 @@ function checkCollisions() {
 		resetBall();
 		p2.poins++;
 	}
+
 	if (b.x > W) {
 		resetBall();
 		p1.poins++;
@@ -125,15 +138,12 @@ function checkCollisions() {
 	}
 
 	//colision con palas
-	if (b.y >= p1.y && (b.y + b.h) <= (p1.y + p1.h)) {
-		if (b.x >= p1.x && b.x <= (p1.x + p1.w)) {
-			b.collide(LEFT);
-		}
+	if (collides(p1, b)) {
+		b.collide(LEFT);
 	}
-	if (b.y >= p2.y && b.y <= p2.y + p2.h) {
-		if ((b.x + b.w) <= (p2.x + p2.w) && (b.x + b.w) <= p2.x) {
-			b.collide(RIGHT);
-		}
+	
+	if (collides(p2, b)) {
+		b.collide(RIGHT);
 	}
 }
 
@@ -220,7 +230,7 @@ io.sockets.on('connection', function(socket) {
 		socket.broadcast.emit('draw', {
 			'p1' : p1,
 			'p2' : p2,
-			'bola' : b
+			'ball' : b
 		});
 	}, 1000 / FPS);
 
