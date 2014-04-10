@@ -29,22 +29,19 @@ var io = require('socket.io').listen(app.listen(port));
 io.set('log level', 1);
 io.set('transports', ['websocket']);
 
-
-
-var Actor = (function(w,h,vx, vy, xIni, yIni) {
-	this.vx = vx;
-	this.vy = vy;
-	this.x = xIni;
-	this.y = yIni;
+var Actor = (function(w, h, x, y, vx, vy) {
 	this.w = w;
 	this.h = h;
+	this.x = x;
+	this.y = y;
+	this.vx = vx;
+	this.vy = vy;
 });
 
-var Jugador = (function(vx, vy, xini, yini, w, h) {
-	Actor.call(this, w, h, vx, vy, xini, yini);
-	this.nombre;
-	this.goles = 0;
-	this.mover = (function(dir) {
+var Paddle = (function(w, h, x, y, vx, vy) {
+	Actor.call(this, w, h, x, y, vx, vy);
+	this.points = 0;
+	this.move = (function(dir) {
 		switch(dir) {
 			case KEY_UP:
 				if (this.y > 0) {
@@ -52,7 +49,7 @@ var Jugador = (function(vx, vy, xini, yini, w, h) {
 				}
 				break;
 			case KEY_DOWN:
-				if ((this.y + this.alto) < altoEscenario) {
+				if ((this.y + this.h) < H) {
 					this.y += this.vy;
 				}
 				break;
@@ -61,17 +58,16 @@ var Jugador = (function(vx, vy, xini, yini, w, h) {
 		}
 	});
 });
-Jugador.prototype = new Actor();
+Paddle.prototype = new Actor();
 
-var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
-	Actor.call(this, vx, vy, xini, yini);
-	this.diametro = diametro;
-	this.angulo = angulo;
+var Ball = (function(w, h, x, y, vx, vy, angulo) {
+	Actor.call(this, w, h, x, y, vx, vy);angle
+	this.angle = angle;
 	// en radianes
 
-	this.mover = (function() {
-		var vyt = (this.vy * Math.sin(this.angulo));
-		var vxt = (this.vx * Math.cos(this.angulo));
+	this.move = (function() {
+		var vyt = (this.vy * Math.sin(this.angle));
+		var vxt = (this.vx * Math.cos(this.angle));
 		this.x += vxt;
 		this.y += vyt;
 		//console.log("angulo: "+this.angulo );
@@ -79,21 +75,20 @@ var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
 		//console.log("Actual:"+ this.x+","+this.y);
 	});
 
-	this.chocar = (function(pos) {
-
+	this.collide = (function(pos) {
 		switch(pos) {
 			case TOP:
-				this.angulo += this.angulo + Math.PI / 2;
+				this.angle += this.angle + Math.PI / 2;
 				break;
 			case LEFT:
-				this.angulo += this.angulo + Math.PI / 2;
+				this.angle += this.angle + Math.PI / 2;
 				break;
 			case BOT:
-				this.angulo += this.angulo + Math.PI / 2;
+				this.angle += this.angle + Math.PI / 2;
 				console.log("BOT");
 				break;
 			case RIGHT:
-				this.angulo += this.angulo + Math.PI / 2;
+				this.angle += this.angle + Math.PI / 2;
 				break;
 		}
 
@@ -102,54 +97,48 @@ var Bola = (function(vx, vy, xini, yini, diametro, angulo) {
 
 	});
 });
-Bola.prototype = new Actor();
-
-
+Ball.prototype = new Actor();
 
 function resetBola() {
-	b.x = anchoEscenario / 2 - b.diametro / 2;
-	b.y = altoEscenario / 2 - b.diametro / 2;
+	b.x = W / 2 - b.h / 2;
+	b.y = W / 2 - b.w / 2;
 }
 
-function checkCol() {
+function checkCollisions() {
 	//goles
-	if ((b.x + b.diametro) < 0) {
-		resetBola();
-		p2.goles++;
+	if ((b.x + b.w) < 0) {
+		resetBall();
+		p2.poins++;
 	}
-	if (b.x > anchoEscenario) {
-		resetBola();
-		p1.goles++;
+	if (b.x > W) {
+		resetBall();
+		p1.poins++;
 	}
 
 	//colisiones
 	if (b.y <= 0) {
 		b.chocar(TOP);
 	}
-	if ((b.y + b.diametro) >= altoEscenario) {
+	if ((b.y + b.h) >= H) {
 		b.chocar(BOT);
 	}
 
 	//colision con palas
-	if (b.y >= p1.y && (b.y + b.diametro) <= (p1.y + p1.alto)) {
-		if (b.x >= p1.x && b.x <= (p1.x + p1.ancho)) {
+	if (b.y >= p1.y && (b.y + b.h) <= (p1.y + p1.h)) {
+		if (b.x >= p1.x && b.x <= (p1.x + p1.w)) {
 			b.chocar(LEFT);
 		}
 	}
-	if (b.y >= p2.y && b.y <= p2.y + p2.alto) {
-		if ((b.x + b.diametro) <= (p2.x + p2.ancho) && (b.x + b.diametro) <= p2.x) {
+	if (b.y >= p2.y && b.y <= p2.y + p2.h) {
+		if ((b.x + b.w) <= (p2.x + p2.w) && (b.x + b.w) <= p2.x) {
 			b.chocar(RIGHT);
 		}
 	}
 }
 
 function update() {
-	b.mover();
-	checkCol();
-}
-
-if (jugador1 && jugador2) {
-
+	b.move();
+	checkCollisions();
 }
 
 function gameStart() {
@@ -161,16 +150,14 @@ function gameStop() {
 }
 
 function gameReset() {
-	resetBola();
-	p1.goles = 0;
-	p2.goles = 0;
+	resetBall();
+	p1.points = 0;
+	p2.points = 0;
 }
 
-
-
 var FPS = 30;
-var anchoEscenario = 1000;
-var altoEscenario = 500;
+var W = 1000;
+var H = 500;
 var KEY_UP = 38;
 var KEY_DOWN = 40;
 var TOP = 0;
@@ -178,12 +165,12 @@ var LEFT = 1;
 var BOT = 2;
 var RIGHT = 3;
 
-var p1 = new Jugador(0, 10, 10, 200, 15, 100);
-var p2 = new Jugador(0, 10, 975, 200, 15, 100);
-var b = new Bola(10, 10, 490, 240, 20, Math.PI / 4);
+var p1 = new Paddle(0, 10, 10, 200, 15, 100);
+var p2 = new Paddle(0, 10, 975, 200, 15, 100);
+var b = new Paddle(10, 10, 490, 240, 20, Math.PI / 4);
 
-var jugador1 = null;
-var jugador2 = null;
+var player1 = null;
+var player2 = null;
 var users = [];
 
 var playerIDCounter = 0;
@@ -203,32 +190,28 @@ io.sockets.on('connection', function(socket) {
 	console.log("Mi ide es: " + myid);
 	socket.on('adduser', function(data) {
 		if (myid == 0) {
-			p1.nombre = data.nombre + "#" + myid;
+			p1.nick = data.nick + "#" + myid;
 		} else if (myid == 1) {
-			p2.nombre = data.nombre + "#" + myid;
+			p2.nick = data.nick + "#" + myid;
 		}
-		socket.set('nombre', data.nombre/*, function () { socket.emit('ready'); }*/);
+		socket.set('nick', data.nick/*, function () { socket.emit('ready'); }*/);
 		//console.log(socket);
 	});
 
 	socket.emit('initData', {
-		'id' : myid,
-		'width' : anchoEscenario,
-		'height' : altoEscenario,
-		'FPS' : FPS,
+		/*'id' : myid,*/
+		'width' : W,
+		'height' : H,
 		'p1' : p1,
 		'p2' : p2,
-		'bola' : b
+		'ball' : b
 	});
 
 	socket.on('keypress', function(data) {
-		console.log("Llega " + (data.key) + " de " + myid);
 		if (myid == 0) {
-			p1.mover((data.key));
-			console.log("player 1 " + (data.key));
+			p1.move((data.key));
 		} else if (myid == 1) {
-			p2.mover((data.key));
-			console.log("player 2 " + (data.key));
+			p2.move((data.key));
 		}
 	});
 
@@ -246,7 +229,7 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', function() {
-		io.sockets.emit('user' + myid + 'disconnected');
+		io.sockets.emit('User ' + myid + 'disconnected');
 	});
 
 });
