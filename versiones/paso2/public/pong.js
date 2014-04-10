@@ -5,40 +5,6 @@ var KEY_UP = 38;
 var KEY_DOWN = 40;
 var canvas = null, ctx = null;
 
-window.onload = (function() {
-	var nombre = prompt("Please enter your name");
-
-	var socket = io.connect(url);
-
-	socket.on('connect', function() {
-		socket.emit('adduser',{'nombre':nombre});
-	});
-
-	socket.on('draw', function(data) {
-		paint(data);
-	});
-
-	socket.on('disconnect', function() {
-		console.log('Disconnected!');
-	});
-
-	socket.on('initData', function(data) {
-		init(data);
-	});
-
-	//Leemos que tecla estamos pulsando
-	document.addEventListener('keydown', function(evt) {
-		var lastPress = evt.keyCode;
-		if (lastPress == KEY_UP || lastPress == KEY_DOWN) {
-			socket.emit('keypress', {
-				'key' : lastPress
-			});
-		}
-	}, false);
-
-
-});
-
 
 function init(data) {
 	canvas = document.getElementById('juego');
@@ -78,13 +44,13 @@ function paint(data) {
 
 	//BARRA DEL JUGADOR 1
 	ctx.fillStyle = '#fff';
-	ctx.fillRect(data.p1.x, data.p1.y, data.p1.ancho, data.p1.alto);
+	ctx.fillRect(10, 200, 15, 100);
 
 	//BARRA DEL JUGADOR 2
-	ctx.fillRect(data.p2.x, data.p2.y, data.p2.ancho, data.p2.alto);
+	ctx.fillRect(975, 200, 15, 100);
 	
 	//BOLITA
-	ctx.fillRect(data.bola.x, data.bola.y, data.bola.diametro, data.bola.diametro);
+	ctx.fillRect(490, 240, 20, 20);
 
 	//RED
 	paintLet();
@@ -106,13 +72,13 @@ function paintData(data)
 {
 	//GOLES J1
 	ctx.font="75px Arial";
-	ctx.fillText(data.p1.goles,390,75); 
+	ctx.fillText(0,390,75); 
 	
 	//GOLES J2
-	ctx.fillText(data.p2.goles,560,75); 
+	ctx.fillText(0,560,75); 
 	
 	//USERS
 	ctx.font="15px Arial";
-	ctx.fillText(data.p1.nombre,10,485); 
-	ctx.fillText(data.p2.nombre,990-(data.p2.nombre.length)*7,485); 
+	ctx.fillText(Bill,10,485); 
+	ctx.fillText(Steve,990-(5)*7,485);
 }

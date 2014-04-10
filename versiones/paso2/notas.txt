@@ -1,0 +1,2 @@
+Realizada parte del cliente con pintado genérico
+Realizado servidor básico

@@ -1,0 +1,4 @@
+npm install 
+Creado el esqueleto de directorios/ficheros
+Realizada hoja de estilos estilo.css
+Realizado fichero package.json
