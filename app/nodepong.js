@@ -206,9 +206,6 @@ function gameReset() {
 }
 
 function chagePlayer(){
-	var cambiado=false;
-	gameStop();
-	gameReset();
 	for (var i = 0; i < users.length; ++i){
 		if(users[i]!=player1 && users[i]!=player2){
 			if(player1==null){
@@ -248,26 +245,16 @@ io.sockets.on('connection', function(socket) {
 
 	playerIDCounter++;
 	
-
-	/*if (playerIDCounter == 2) {
-		gameStart();
-	}*/
-
 	console.log("Mi ide es: " + myid);
 	socket.on('adduser', function() {
 		users.push(myid);
-		if(player1==null){
-			player1 = myid;
-		}else if(player2==null){
-			player2 = myid;
+		if(gameStatus==STOPPED /*player1==null || player2==null*/){
+			chagePlayer();
 		}
+
 		if (gameStatus==STOPPED && player1!=null && player2!=null) {
 			gameStart();
-			console.log("enoueza");
 		}
-		
-		//socket.set('nick', data.nick, function () { socket.emit('ready'); });
-		//console.log(socket);
 	});
 
 	socket.emit('initData', {
