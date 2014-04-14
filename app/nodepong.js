@@ -277,6 +277,9 @@ io.sockets.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		users.splice(users.indexOf(myid), 1);
 		if(myid==player1 || myid==player2){
+			gameStop();
+			gameReset(); 
+
 			if (myid == player1) {
 				player1=null;
 			} else if (myid == player2) {
