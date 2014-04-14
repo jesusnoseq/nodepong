@@ -25,7 +25,7 @@ app.get("/", function(req, res) {
 	res.render("index");
 });
 
-var io = require('socket.io').listen(app.listen(port));
+var io = require('socket.io').listen(app.listen(port,"0.0.0.0"));
 io.set('log level', 1);
 io.set('transports', ['websocket']);
 
@@ -40,6 +40,7 @@ var TOP = 0;
 var LEFT = 1;
 var BOT = 2;
 var RIGHT = 3;
+var STOP = 4;
 
 var Actor = (function(x, y, w, h, vx, vy) {
 	this.x = x;
@@ -54,8 +55,13 @@ var Paddle = (function(x, y, w, h, vx, vy) {
 	Actor.call(this, x, y, w, h, vx, vy);
 	this.points = 0;
 	this.nick;
-	this.move = (function(dir) {
-		switch(dir) {
+	this.dir=0;
+	
+	this.lastKey=(function(key){
+		this.dir=key;
+	});
+	this.move = (function() {
+		switch(this.dir) {
 			case KEY_UP:
 				if (this.y > 0) {
 					this.y -= this.vy;
@@ -69,6 +75,7 @@ var Paddle = (function(x, y, w, h, vx, vy) {
 			default:
 
 		}
+		this.dir=0;
 	});
 });
 Paddle.prototype = new Actor();
@@ -83,43 +90,13 @@ var Ball = (function(x, y, w, h, vx, vy, angle) {
 		var vyt = (this.vy * Math.sin(this.angle));
 		var vxt = (this.vx * Math.cos(this.angle));
 		this.x += vxt;
-		this.y += vyt;
-		//console.log("angulo: "+this.angulo );
-		//console.log( vxt+" --"+vyt + " || "+Math.sin(angulo)+" -- "+Math.cos(angulo));
-		//console.log("Actual:"+ this.x+","+this.y);
+		this.y -= vyt;
 	});
 
 	this.collide = (function(pos) {
-		var dir=RIGHT;
-		//this.angle=this.angle%(Math.PI*2);
-		//if(this.angle>Math.PI/2 && this.angle < (Math.PI+Math.PI/2)){
-			//dir=LEFT;
-		//}
-		console.log("Dir: "+ dir+"   "+this.angle);
-		
-		/*if(pos==TOP && dir==LEFT){
-			this.angle += Math.PI / 2;
-		}
-		if(pos==TOP && dir==RIGHT){
-			this.angle -= Math.PI / 2;
-		}
-		if(pos==BOT && dir==LEFT){
-			this.angle -= Math.PI / 2;
-		}
-		if(pos==BOT && dir==RIGHT){
-			this.angle += Math.PI / 2;
-		}
-		if(pos==RIGHT){
-			this.angle += Math.PI/2;
-		}
-		if(pos==LEFT){
-			this.angle += Math.PI/2;
-		}*/
-		
 		switch(pos) {
 			case TOP:
 				this.angle = -this.angle;
-				//console.log("TOP");
 				break;
 			case LEFT:
 				if (this.angle>0){
@@ -130,7 +107,6 @@ var Ball = (function(x, y, w, h, vx, vy, angle) {
 				break;
 			case BOT:
 				this.angle= -this.angle;
-				//console.log("BOT");
 				break;
 			case RIGHT:
 				if (this.angle>0){
@@ -237,9 +213,17 @@ var player2 = null;
 var users = [];
 
 
+
 function update() {
+	p1.move();
+	p2.move();
 	b.move();
 	checkCollisions();
+	io.sockets.emit('draw', {
+		'p1' : p1,
+		'p2' : p2,
+		'ball' : b
+	});
 }
 
 
@@ -257,17 +241,17 @@ io.sockets.on('connection', function(socket) {
 	//console.log("New user");
 	console.log("Mi ide es: " + myid);
 	socket.on('adduser', function(data) {
+		users.push({'id':myid, 'nick':data.nick});
 		if (myid == 0) {
 			p1.nick = data.nick + "#" + myid;
 		} else if (myid == 1) {
 			p2.nick = data.nick + "#" + myid;
 		}
-		socket.set('nick', data.nick/*, function () { socket.emit('ready'); }*/);
+		//socket.set('nick', data.nick, function () { socket.emit('ready'); });
 		//console.log(socket);
 	});
 
 	socket.emit('initData', {
-		/*'id' : myid,*/
 		'width' : W,
 		'height' : H,
 		'p1' : p1,
@@ -277,9 +261,9 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('keypress', function(data) {
 		if (myid == 0) {
-			p1.move((data.key));
+			p1.lastKey((data.key));
 		} else if (myid == 1) {
-			p2.move((data.key));
+			p2.lastKey((data.key));
 		}
 	});
 
@@ -296,19 +280,11 @@ io.sockets.on('connection', function(socket) {
 				});
 		}, 1000 / FPS);*/
 	}
-	setInterval(function() {
-		if(gameStatus==1){
-			socket.emit('draw', {
-				'p1' : p1,
-				'p2' : p2,
-				'ball' : b
-			});
-		}
-	}, 1000 / FPS);
 
 
 	socket.on('disconnect', function() {
-		io.sockets.emit('User ' + myid + 'disconnected');
+		console.log("usuario "+myid+" desconectado");
+		//io.sockets.emit('User ' + myid + 'disconnected');
 	});
 
 });
