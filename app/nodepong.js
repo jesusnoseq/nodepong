@@ -40,7 +40,8 @@ var TOP = 0;
 var LEFT = 1;
 var BOT = 2;
 var RIGHT = 3;
-var STOP = 4;
+var STARTED = 1;
+var STOPPED = 0;
 
 var Actor = (function(x, y, w, h, vx, vy) {
 	this.x = x;
@@ -54,12 +55,12 @@ var Actor = (function(x, y, w, h, vx, vy) {
 var Paddle = (function(x, y, w, h, vx, vy) {
 	Actor.call(this, x, y, w, h, vx, vy);
 	this.points = 0;
-	this.nick;
 	this.dir=0;
 	
 	this.lastKey=(function(key){
 		this.dir=key;
 	});
+	
 	this.move = (function() {
 		switch(this.dir) {
 			case KEY_UP:
@@ -117,19 +118,38 @@ var Ball = (function(x, y, w, h, vx, vy, angle) {
 				break;
 		}
 	});
+	
+	this.resetBall= (function (dir) {
+		b.x = W / 2 - b.w / 2;
+		b.y = H / 2 - b.h / 2;
+		if(dir==LEFT){
+			b.angle=-Math.PI/4;
+		}else{
+			b.angle=(Math.PI/4)*3;
+		}
+	});
 });
 Ball.prototype = new Actor();
 
-function resetBall(dir) {
-	b.x = W / 2 - b.w / 2;
-	b.y = H / 2 - b.h / 2;
-	if(dir==LEFT){
-		b.angle=-Math.PI/4;
-	}else{
-		b.angle=(Math.PI/4)*3;
-	}
 
-}
+
+var gameStatus=STOPPED;
+var interval;
+
+var paddleW = 15;
+var paddleH = 100;
+var ballDiam = 20;
+
+var p1 = new Paddle(10 					, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
+var p2 = new Paddle(W-10-paddleW		, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
+var b  = new Ball  (W / 2 - ballDiam/2	, H/2-ballDiam/2, ballDiam, ballDiam, 10, 10, -Math.PI/4);
+
+var player1 = null;
+var player2 = null;
+var users = [];
+
+
+
 function collides(a, b) {
     return !(
         ((a.y + a.h) < (b.y)) ||
@@ -138,26 +158,16 @@ function collides(a, b) {
         (a.x > (b.x + b.w))
     );
 }
-/*
-function collides(aa, bb) {
-	if (Math.abs(aa.x - bb.x) < aa.w + bb.w) {
-		if (Math.abs(aa.y - bb.y) < aa.h + bb.h) {
-			return true;
-		}
-	}
-
-	return false;
-}*/
 
 function checkCollisions() {
 	//goles
 	if ((b.x + b.w) < 0) {
-		resetBall(LEFT);
+		b.resetBall(LEFT);
 		p2.points++;
 	}
 
 	if (b.x > W) {
-		resetBall(RIGHT);
+		b.resetBall(RIGHT);
 		p1.points++;
 	}
 
@@ -181,38 +191,37 @@ function checkCollisions() {
 
 function gameStart() {
 	interval = setInterval(update, 1000 / FPS);
-	gameStatus=1;
+	gameStatus=STARTED;
 }
 
 function gameStop() {
 	clearInterval(interval);
-	gameStatus=0;
+	gameStatus=STOPPED;
 }
 
 function gameReset() {
-	resetBall();
+	b.resetBall();
 	p1.points = 0;
 	p2.points = 0;
 }
 
-
-
-var gameStatus=0;
-var interval;
-
-var paddleW = 15;
-var paddleH = 100;
-var ballDiam = 20;
-
-var p1 = new Paddle(10 					, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
-var p2 = new Paddle(W-10-paddleW		, H/2-paddleH/2 , paddleW , paddleH , 0 , 20 );
-var b  = new Ball  (W / 2 - ballDiam/2	, H/2-ballDiam/2, ballDiam, ballDiam, 10, 10, -Math.PI/4);
-
-var player1 = null;
-var player2 = null;
-var users = [];
-
-
+function chagePlayer(){
+	var cambiado=false;
+	gameStop();
+	gameReset();
+	for (var i = 0; i < users.length; ++i){
+		if(users[i]!=player1 && users[i]!=player2){
+			if(player1==null){
+				player1=users[i];
+				return true;
+			}else if(player2==null){
+				player2=users[i];
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 function update() {
 	p1.move();
@@ -227,6 +236,8 @@ function update() {
 }
 
 
+
+
 var playerIDCounter = 0;
 //var game=require('./game.js');
 
@@ -238,15 +249,23 @@ io.sockets.on('connection', function(socket) {
 	playerIDCounter++;
 	
 
-	//console.log("New user");
+	/*if (playerIDCounter == 2) {
+		gameStart();
+	}*/
+
 	console.log("Mi ide es: " + myid);
-	socket.on('adduser', function(data) {
-		users.push({'id':myid, 'nick':data.nick});
-		if (myid == 0) {
-			p1.nick = data.nick + "#" + myid;
-		} else if (myid == 1) {
-			p2.nick = data.nick + "#" + myid;
+	socket.on('adduser', function() {
+		users.push(myid);
+		if(player1==null){
+			player1 = myid;
+		}else if(player2==null){
+			player2 = myid;
 		}
+		if (gameStatus==STOPPED && player1!=null && player2!=null) {
+			gameStart();
+			console.log("enoueza");
+		}
+		
 		//socket.set('nick', data.nick, function () { socket.emit('ready'); });
 		//console.log(socket);
 	});
@@ -260,31 +279,26 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('keypress', function(data) {
-		if (myid == 0) {
+		if (myid == player1) {
 			p1.lastKey((data.key));
-		} else if (myid == 1) {
+		} else if (myid == player2) {
 			p2.lastKey((data.key));
 		}
 	});
 
 
-	if (playerIDCounter == 2) {
-		gameStart();
-		/*setInterval(function() {
-				console.log("Intervalo "+ myid);
-				update();
-				socket.broadcast.emit('draw', {
-					'p1' : p1,
-					'p2' : p2,
-					'ball' : b
-				});
-		}, 1000 / FPS);*/
-	}
-
-
 	socket.on('disconnect', function() {
-		console.log("usuario "+myid+" desconectado");
-		//io.sockets.emit('User ' + myid + 'disconnected');
+		users.splice(users.indexOf(myid), 1);
+		if(myid==player1 || myid==player2){
+			if (myid == player1) {
+				player1=null;
+			} else if (myid == player2) {
+				player2=null;
+			}
+			if(chagePlayer()){
+				gameStart();
+			}
+		}
 	});
 
 });

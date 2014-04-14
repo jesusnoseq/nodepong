@@ -6,12 +6,12 @@ var KEY_DOWN = 40;
 var canvas = null, ctx = null;
 
 window.onload = (function() {
-	var nick = prompt("Please enter your name:");
+	//var nick = prompt("Please enter your name:");
 
 	var socket = io.connect(url);
 
 	socket.on('connect', function() {
-		socket.emit('adduser',{'nick':nick});
+		socket.emit('adduser');//,{'nick':nick});
 	});
 
 	socket.on('draw', function(data) {
@@ -116,7 +116,7 @@ function paintData(data)
 	ctx.fillText(data.p2.points,560,75); 
 	
 	//USERS
-	ctx.font="15px Arial";
-	ctx.fillText(data.p1.nick,10,485); 
-	ctx.fillText(data.p2.nick,990-(data.p2.nick.length)*7,485); 
+	//ctx.font="15px Arial";
+	//ctx.fillText(data.p1.nick,10,485); 
+	//ctx.fillText(data.p2.nick,990-(data.p2.nick.length)*7,485); 
 }
