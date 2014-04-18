@@ -2,18 +2,18 @@ var express = require("express");
 var app = express();
 var port = 8080;
 
-//app.set('port',process.env.PORT || 80);
-
+// Fijando el sistema de plantillas
 app.set('view engine', "jade");
 app.engine('jade', require('jade').__express);
 
+// Indicando las rutas
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 
-app.use(express.cookieParser());
-app.use(express.session({
-	secret : 'this is a secret'
-}));
+//app.use(express.cookieParser());
+//app.use(express.session({
+//	secret : 'this is a secret'
+//}));
 
 //app.use(express.bodyParser());
 app.use(express.json());
@@ -21,16 +21,19 @@ app.use(express.urlencoded());
 
 app.use(express.methodOverride());
 
+// Definiendo rutas
 app.get("/", function(req, res) {
 	res.render("index");
 });
 
+//indicamos que escuche en el puerto especificado a todas las IP
 var io = require('socket.io').listen(app.listen(port,"0.0.0.0"));
 io.set('log level', 1);
+//Indicando metodos de comunicacion a usar
 io.set('transports', ['websocket']);
 
 
-
+// Constantes del juego
 var FPS = 30;
 var W = 1000;
 var H = 500;
@@ -132,7 +135,8 @@ var Ball = (function(x, y, w, h, vx, vy, angle) {
 Ball.prototype = new Actor();
 
 
-
+// variables del juego
+var playerCounter = 0;
 var gameStatus=STOPPED;
 var interval;
 
@@ -235,15 +239,14 @@ function update() {
 
 
 
-var playerIDCounter = 0;
-//var game=require('./game.js');
+
 
 io.sockets.on('connection', function(socket) {
-	//socket.set('id',playerIDCounter);
+	//socket.set('id',playerCounter);
 	//console.log(socket);
-	var myid = playerIDCounter;
+	var myid = playerCounter;
 
-	playerIDCounter++;
+	playerCounter++;
 	
 	console.log("Mi ide es: " + myid);
 	socket.on('adduser', function() {
