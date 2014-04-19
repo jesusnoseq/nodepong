@@ -163,19 +163,7 @@
 						https://github.com/learnboost/socket.io/wiki
 					</p>
 				</section>
-				<section>
-					<h2>Emitiendo con socket.io</h2>
-					<pre>
-					<code>
-						// Emite al socket actual de cliente que está conectado
-						socket.emit('evento', datos);
-						// Emite a todos los clientes conectados
-						io.sockets.emit('evento', datos);
-						// Envia un mensaje a todos los conectados menos al que socket que lo envia
-						socket.broadcast.emit('evento', datos);
-					</code>
-					</pre>
-				</section>
+
 
 				<section>
 
@@ -336,11 +324,46 @@ function paintData(data)
 					</section>
 					
 				</section>
-
+<section>
 				<section>
-					<h2>Paso 3 - Comunicacion</h2>
+					<h2>Paso 3 - Comunicación con socket.io</h2>
+					<ul>
+						<li>Configuracion</li>
+						<li>Eventos</li>
+					</ul>
 				</section>
 				
+				<section>
+					<h2>Configuracion</h2>
+					<pre>
+					<code>
+// Indicamos que escuche en el puerto especificado
+var io = require('socket.io').listen(app.listen(8080));
+// Nivel de log de socket.io
+io.set('log level', 1);
+//Indicando metodos de comunicacion a usar
+io.set('transports', ['websocket']);
+Más en https://github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO
+					</code>
+					</pre>
+				</section>	
+				
+				
+				
+				<section>
+					<h2>Emitiendo con socket.io</h2>
+					<pre>
+					<code>
+// Emite al socket actual de cliente que está conectado
+socket.emit('evento', datos);
+// Emite a todos los clientes conectados
+io.sockets.emit('evento', datos);
+// Envia un mensaje a todos los conectados menos al que socket que lo envia
+socket.broadcast.emit('evento', datos);
+					</code>
+					</pre>
+				</section>
+</section>
 				<section>
 					<h2>Paso 4 - Todo junto</h2>
 				</section>
