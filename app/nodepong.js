@@ -6,28 +6,19 @@ var port = 8080;
 app.set('view engine', "jade");
 app.engine('jade', require('jade').__express);
 
-// Indicando las rutas
+// Indicando las rutas de ficheros de vistas y estaticos
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 
-//app.use(express.cookieParser());
-//app.use(express.session({
-//	secret : 'this is a secret'
-//}));
-
-//app.use(express.bodyParser());
-app.use(express.json());
-app.use(express.urlencoded());
-
-app.use(express.methodOverride());
 
 // Definiendo rutas
 app.get("/", function(req, res) {
 	res.render("index");
 });
 
-//indicamos que escuche en el puerto especificado a todas las IP
-var io = require('socket.io').listen(app.listen(port,"0.0.0.0"));
+// Indicamos que escuche en el puerto especificado
+var io = require('socket.io').listen(app.listen(port));
+// Nivel de log de socket.io
 io.set('log level', 1);
 //Indicando metodos de comunicacion a usar
 io.set('transports', ['websocket']);
@@ -175,7 +166,7 @@ function checkCollisions() {
 		p1.points++;
 	}
 
-	//colisiones
+	//colisiones con paredes
 	if (b.y <= 0) {
 		b.collide(TOP);
 	}
@@ -239,8 +230,7 @@ function update() {
 
 
 
-
-
+// Parte para cada cliente
 io.sockets.on('connection', function(socket) {
 	//socket.set('id',playerCounter);
 	//console.log(socket);
@@ -248,7 +238,7 @@ io.sockets.on('connection', function(socket) {
 
 	playerCounter++;
 	
-	console.log("Mi ide es: " + myid);
+	console.log("ID del nuevo cliente: " + myid);
 	socket.on('adduser', function() {
 		users.push(myid);
 		if(gameStatus==STOPPED /*player1==null || player2==null*/){
@@ -259,7 +249,8 @@ io.sockets.on('connection', function(socket) {
 			gameStart();
 		}
 	});
-
+	
+	// Datos iniciales para el cliente
 	socket.emit('initData', {
 		'width' : W,
 		'height' : H,
@@ -268,6 +259,7 @@ io.sockets.on('connection', function(socket) {
 		'ball' : b
 	});
 
+	// cada vez que el cliente pulsa una tecla
 	socket.on('keypress', function(data) {
 		if (myid == player1) {
 			p1.lastKey((data.key));
@@ -278,7 +270,10 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('disconnect', function() {
+		// Borro el ID del cliente desconectado del array de clientes
 		users.splice(users.indexOf(myid), 1);
+		// Si el cliente desconectado es un juegador se para el juego 
+		// y se busca otro jugador
 		if(myid==player1 || myid==player2){
 			gameStop();
 			gameReset(); 
@@ -288,6 +283,8 @@ io.sockets.on('connection', function(socket) {
 			} else if (myid == player2) {
 				player2=null;
 			}
+			// Si se consigue reemplazar al jugador se pone el juego de
+			// de nuevo en marcha
 			if(chagePlayer()){
 				gameStart();
 			}

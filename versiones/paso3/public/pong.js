@@ -1,6 +1,19 @@
+var url="http://localhost:8080";
+
 var KEY_UP = 38;
 var KEY_DOWN = 40;
 var canvas = null, ctx = null;
+
+
+window.onload = (function() {
+	var socket = io.connect(url);
+	socket.on('connect', function() {
+		socket.emit('adduser',{hola: new Date()});
+	});
+});
+
+
+
 
 
 function init(data) {

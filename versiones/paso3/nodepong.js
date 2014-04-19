@@ -17,7 +17,26 @@ app.get("/", function(req, res) {
 });
 
 // Indicamos que escuche en el puerto especificado
-app.listen(port);
+var io = require('socket.io').listen(app.listen(port));
+// Nivel de log de socket.io
+io.set('log level', 1);
+//Indicando metodos de comunicacion a usar
+io.set('transports', ['websocket']);
 
+
+var clientCounter=0;
+// Parte para cada cliente
+io.sockets.on('connection', function(socket) {
+	socket.on('adduser', function(data) {
+		clientCounter++;
+		console.log(' Contador:' + clientCounter);
+		console.log(data);
+	});
+	
+	
+	socket.on('disconnect', function() {
+		console.log("Cliente desconectado");
+	});
+});
 
 console.log("Listening on port " + port);
