@@ -328,7 +328,8 @@ function paintData(data)
 				<section>
 					<h2>Paso 3 - Comunicación con socket.io</h2>
 					<ul>
-						<li>Configuracion</li>
+						<li>Configuración</li>
+						<li>Emitir</li>
 						<li>Eventos</li>
 					</ul>
 				</section>
@@ -343,13 +344,10 @@ var io = require('socket.io').listen(app.listen(8080));
 io.set('log level', 1);
 //Indicando metodos de comunicacion a usar
 io.set('transports', ['websocket']);
-
 					</code>
 					</pre>
 <a href="//github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO">Más info.</a>
 				</section>	
-				
-				
 				
 				<section>
 					<h2>Emitiendo con socket.io</h2>
@@ -361,6 +359,45 @@ socket.emit('evento', datos);
 io.sockets.emit('evento', datos);
 // Envia un mensaje a todos los conectados menos al que socket que lo envia
 socket.broadcast.emit('evento', datos);
+					</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Eventos con socket.io (Servidor)</h2>
+					<pre>
+					<code>
+	...	...	...	...	...
+var clientCounter=0;
+
+io.sockets.on('connection', function(socket) {
+	socket.on('adduser', function(data) {
+		clientCounter++;
+		console.log(' Contador:' + clientCounter);
+		console.log(data);
+	});
+	
+	
+	socket.on('disconnect', function() {
+		console.log("Cliente desconectado");
+	});
+});
+					</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Eventos con socket.io (Cliente)</h2>
+	...	...	...	...	...
+&lt;script src="/socket.io/socket.io.js"&gt; &lt;/script&gt;
+	...	...	...	...	...
+					<pre>
+					<code>
+	...	...	...	...	...
+window.onload = (function() {
+	var socket = io.connect("http://localhost:8080");
+	socket.on('connect', function() {
+		socket.emit('adduser',{hola: new Date()});
+	});
+});
 					</code>
 					</pre>
 				</section>
