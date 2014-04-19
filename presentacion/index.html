@@ -185,22 +185,23 @@
 					</p>
 				</section>
 				<section>
-				<section>
-					<h2>Paso 1 - Instalación y Estructura de ficheros</h2>
-					1.- Descargar el esqueleto de la aplicación.<br>
-					2.- Para poder instalar los modulos y dependencias necesarios introduciremos el comando npm install
-					en la raiz del proyecto "Donde tenemos el fichero package.json".
+					<section>
+						<h2>Paso 1 - Instalación y Estructura de ficheros</h2>
+						1.- Descargar el esqueleto de la aplicación.<br>
+						2.- Para poder instalar los modulos y dependencias necesarios introduciremos el comando npm install
+						en la raiz del proyecto "Donde tenemos el fichero package.json".
+					</section>
+					<section>
+							La estructura de directorios y ficheros es la siguiente:<br>
+							node_modules: Contiene todos los modulos de node necesarios para trabajar.<br>
+							public: En este directorio tenemos el cliente de juego y la hoja de estilos<br>
+							views: Donde tenemos el index de la web que contendrá la aplicación<br>
+							nodepong.js: Donde tenemos el servidor y la lógica de juego.<br>
+							package.json:
+					</section>
 				</section>
 				<section>
-						La estructura de directorios y ficheros es la siguiente:<br>
-						node_modules: Contiene todos los modulos de node necesarios para trabajar.<br>
-						public: En este directorio tenemos el cliente de juego y la hoja de estilos<br>
-						views: Donde tenemos el index de la web que contendrá la aplicación<br>
-						nodepong.js: Donde tenemos el servidor y la lógica de juego.<br>
-						package.json:
-				</section>
-				
-				<section>
+					<section>
 					<h2>Paso 2 - El juego</h2>
 					El cliente pong.js tiene las siguientes funciones que se encargarán de pintar todos los elementos
 					del juego.
@@ -210,6 +211,106 @@
 					function paint(data): Esta función se encarga de pintar los distintos elementos en pantalla<br>
 					function paintLet(): Pintado de red de juego "Usada para simplificar paint"<br>
 					function paintData(data): Pintado de datos de juego "Usada para simplificar paint"
+					</section>
+					<section>
+					<h3>Paso 2 - El juego - Función Init</h3>
+					<pre>
+					<code style="font-size: 18px; margin-top: 20px;">
+					function init(data) {
+						canvas = document.getElementById('juego');
+						ctx = canvas.getContext('2d');
+					
+						setFullScreen(data);
+						
+						paint(data);
+					}
+					</code>
+					</pre>
+					</section>
+					
+					<section>
+					<h3>Paso 2 - El juego - Función setFullScreen</h3>
+					<pre>
+					<code style="font-size: 18px; margin-top: 20px;">
+					function setFullScreen(data) {
+						canvas.width = data.width;
+						canvas.height = data.height;
+					
+						var w = window.innerWidth / canvas.width;
+						var h = window.innerHeight / canvas.height;
+						var scale = Math.min(h, w);
+					
+						//DEFINIR ANCHO Y ALTO DEL CANVAS
+						canvas.style.width = (canvas.width * scale) + 'px';
+						canvas.style.height = (canvas.height * scale) + 'px';
+					
+						//CENTRAR PANTALLA
+						canvas.style.position = 'fixed';
+						canvas.style.left = '50%';
+						canvas.style.top = '50%';
+						canvas.style.marginLeft = -(canvas.width * scale) / 2 + 'px';
+						canvas.style.marginTop = -(canvas.height * scale) / 2 + 'px';
+					}
+					</code>
+					</pre>
+					</section>
+					
+					<section>
+					<h3>Paso 2 - El juego - Función paint</h3>
+					<pre>
+					<code style="font-size: 18px; margin-top: 20px;">
+					function paint(data) {		
+						//FONDO
+						ctx.fillStyle = '#000';
+						ctx.fillRect(0, 0, canvas.width, canvas.height);
+					
+						//BARRA DEL JUGADOR 1
+						ctx.fillStyle = '#fff';
+						ctx.fillRect(10, 200, 15, 100);
+					
+						//BARRA DEL JUGADOR 2
+						ctx.fillRect(975, 200, 15, 100);
+						
+						//BOLITA
+						ctx.fillRect(490, 240, 20, 20);
+					
+						//RED
+						paintLet();
+						
+						//DATOS
+						paintData();
+					}
+					</code>
+					</pre>
+					</section>
+					
+					<section>
+					<h3>Paso 2 - El juego - Funciones auxiliares para paint</h3>
+					<pre>
+					<code style="font-size: 18px; margin-top: 20px;">
+					function paintLet()
+					{
+						var i;
+						for(i=10;i&#60 500;i+=20)
+						{
+							ctx.fillRect(495,i,10,10);
+						}
+					}
+					
+					function paintData(data)
+					{
+						ctx.font="75px Arial";
+						
+						//GOLES J1
+						ctx.fillText(0,390,75); 
+						
+						//GOLES J2
+						ctx.fillText(0,560,75); 
+					}
+					</code>
+					</pre>
+					</section>
+					
 				</section>
 
 				<section>
@@ -219,7 +320,7 @@
 				<section>
 					<h2>Paso 4 - Todo junto</h2>
 				</section>
-</section>
+
 
 				<section>
 					<h1>FIN</h1>
