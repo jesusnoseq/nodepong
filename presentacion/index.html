@@ -233,14 +233,14 @@
 					<h3>Paso 2 - El juego - Función Init</h3>
 					<pre>
 					<code style="font-size: 18px; margin-top: 20px;">
-					function init(data) {
-						canvas = document.getElementById('juego');
-						ctx = canvas.getContext('2d');
+function init(data) {
+	canvas = document.getElementById('juego');
+	ctx = canvas.getContext('2d');
 					
-						setFullScreen(data);
+	setFullScreen(data);
 						
-						paint(data);
-					}
+	paint(data);
+}
 					</code>
 					</pre>
 					</section>
@@ -249,25 +249,25 @@
 					<h3>Paso 2 - El juego - Función setFullScreen</h3>
 					<pre>
 					<code style="font-size: 18px; margin-top: 20px;">
-					function setFullScreen(data) {
-						canvas.width = data.width;
-						canvas.height = data.height;
+function setFullScreen(data) {
+	canvas.width = data.width;
+	canvas.height = data.height;
 					
-						var w = window.innerWidth / canvas.width;
-						var h = window.innerHeight / canvas.height;
-						var scale = Math.min(h, w);
+	var w = window.innerWidth / canvas.width;
+	var h = window.innerHeight / canvas.height;
+	var scale = Math.min(h, w);
+				
+	//DEFINIR ANCHO Y ALTO DEL CANVAS
+	canvas.style.width = (canvas.width * scale) + 'px';
+	canvas.style.height = (canvas.height * scale) + 'px';
 					
-						//DEFINIR ANCHO Y ALTO DEL CANVAS
-						canvas.style.width = (canvas.width * scale) + 'px';
-						canvas.style.height = (canvas.height * scale) + 'px';
-					
-						//CENTRAR PANTALLA
-						canvas.style.position = 'fixed';
-						canvas.style.left = '50%';
-						canvas.style.top = '50%';
-						canvas.style.marginLeft = -(canvas.width * scale) / 2 + 'px';
-						canvas.style.marginTop = -(canvas.height * scale) / 2 + 'px';
-					}
+	//CENTRAR PANTALLA
+	canvas.style.position = 'fixed';
+	canvas.style.left = '50%';
+	canvas.style.top = '50%';
+	canvas.style.marginLeft = -(canvas.width * scale) / 2 + 'px';
+	canvas.style.marginTop = -(canvas.height * scale) / 2 + 'px';
+}
 					</code>
 					</pre>
 					</section>
@@ -276,27 +276,27 @@
 					<h3>Paso 2 - El juego - Función paint</h3>
 					<pre>
 					<code style="font-size: 18px; margin-top: 20px;">
-					function paint(data) {		
-						//FONDO
-						ctx.fillStyle = '#000';
-						ctx.fillRect(0, 0, canvas.width, canvas.height);
+function paint(data) {		
+	//FONDO
+	ctx.fillStyle = '#000';
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 					
-						//BARRA DEL JUGADOR 1
-						ctx.fillStyle = '#fff';
-						ctx.fillRect(10, 200, 15, 100);
+	//BARRA DEL JUGADOR 1
+	ctx.fillStyle = '#fff';
+	ctx.fillRect(10, 200, 15, 100);
 					
-						//BARRA DEL JUGADOR 2
-						ctx.fillRect(975, 200, 15, 100);
+	//BARRA DEL JUGADOR 2
+	ctx.fillRect(975, 200, 15, 100);
 						
-						//BOLITA
-						ctx.fillRect(490, 240, 20, 20);
+	//BOLITA
+	ctx.fillRect(490, 240, 20, 20);
 					
-						//RED
-						paintLet();
+	//RED
+	paintLet();
 						
-						//DATOS
-						paintData();
-					}
+	//DATOS
+	paintData();
+}
 					</code>
 					</pre>
 					</section>
@@ -305,25 +305,25 @@
 					<h3>Paso 2 - El juego - Funciones auxiliares para paint</h3>
 					<pre>
 					<code style="font-size: 18px; margin-top: 20px;">
-					function paintLet()
-					{
-						var i;
-						for(i=10;i&#60 500;i+=20)
-						{
-							ctx.fillRect(495,i,10,10);
-						}
-					}
+function paintLet()
+{
+	var i;
+	for(i=10;i&#60 500;i+=20)
+	{
+		ctx.fillRect(495,i,10,10);
+	}
+}
 					
-					function paintData(data)
-					{
-						ctx.font="75px Arial";
+function paintData(data)
+{
+	ctx.font="75px Arial";
 						
-						//GOLES J1
-						ctx.fillText(0,390,75); 
+	//GOLES J1
+	ctx.fillText(0,390,75); 
 						
-						//GOLES J2
-						ctx.fillText(0,560,75); 
-					}
+	//GOLES J2
+	ctx.fillText(0,560,75); 
+}
 					</code>
 					</pre>
 					</section>
