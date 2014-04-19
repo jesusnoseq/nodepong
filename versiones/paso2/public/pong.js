@@ -78,7 +78,7 @@ function paintData(data)
 	ctx.fillText(0,560,75); 
 	
 	//USERS
-	ctx.font="15px Arial";
-	ctx.fillText(Bill,10,485); 
-	ctx.fillText(Steve,990-(5)*7,485);
+	//ctx.font="15px Arial";
+	//ctx.fillText(Bill,10,485); 
+	//ctx.fillText(Steve,990-(5)*7,485);
 }
