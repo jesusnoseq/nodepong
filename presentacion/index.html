@@ -188,8 +188,8 @@
 					<section>
 						<h2>Paso 1 - Instalación y Estructura de ficheros</h2>
 						1.- Descargar el esqueleto de la aplicación.<br>
-						2.- Para poder instalar los modulos y dependencias necesarios introduciremos el comando npm install
-						en la raiz del proyecto "Donde tenemos el fichero package.json".
+						2.- Para poder instalar los modulos y dependencias necesarios introduciremos el comando 
+						<b>npm install</b> en la raiz del proyecto "Donde tenemos el fichero <b>package.json</b>".
 					</section>
 					<section>
 							La estructura de directorios y ficheros es la siguiente:<br>
@@ -198,6 +198,23 @@
 							views: Donde tenemos el index de la web que contendrá la aplicación<br>
 							nodepong.js: Donde tenemos el servidor y la lógica de juego.<br>
 							package.json:
+					</section>
+					<section>
+					<pre>
+					<code style="font-size: 18px; margin-top: 20px;">
+					{
+					    "name": "nodepong",
+					    "version": "0.0.1",
+					    "description": "Pong en red",
+					    "dependencies": {
+					        "socket.io": "0.9.16",
+					        "express": "3.5.1",
+					        "jade": "1.3.0"
+					    },
+					    "author": "Jesusnoseq & PacoPGD"
+					}
+					</code>
+					</pre>
 					</section>
 				</section>
 				<section>
