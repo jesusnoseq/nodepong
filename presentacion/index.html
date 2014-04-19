@@ -162,12 +162,16 @@
 				</section>
 				<section>
 					<h2>Emitiendo con socket.io</h2>
-					// socket is the *current* socket of the client that just connected
-					socket.emit('evento', datos);
-					// emit to all sockets
-					io.sockets.emit('evento', datos);
-					// sends a message to everyone except the socket that starts it
-					socket.broadcast.emit('users_count', clients);
+					<pre>
+					<code  style="font-size: 18px; margin-top: 20px;">
+						// Emite al socket actual de cliente que está conectado
+						socket.emit('evento', datos);
+						// Emite a todos los clientes conectados
+						io.sockets.emit('evento', datos);
+						// Envia un mensaje a todos los conectados menos al que socket que lo envia
+						socket.broadcast.emit('evento', datos);
+					</code>
+					</pre>
 				</section>
 
 				<section>
