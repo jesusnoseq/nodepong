@@ -1,7 +1,3 @@
-arreglar colisiones
-arreglar rebotes
-hacer colas
-Documentar
-	...
+nicks
 multisala
 mejorar colisiones
