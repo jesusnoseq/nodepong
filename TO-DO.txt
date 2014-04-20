@@ -1,4 +1,4 @@
 nicks
 separa la logica del juego del servidor (usar require)
 multisala
-mejorar colisiones
+mejorar colisiones e impactos (usar box2D?)
