@@ -14,7 +14,7 @@
 		<meta name="author" content="Jesús Rodríguez Pérez">
 
 		<link rel="stylesheet" href="css/reveal.min.css">
-		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -137,7 +137,7 @@
 					<p>
 						Según wikipedia:
 						<br>
-						Tecnología que proporciona un canal de comunicación bidireccional y full-duplex sobre un único socket TCP...
+						Tecnología que proporciona un canal de comunicación bidireccional y full-duplex sobre un único socket TCP.
 					</p>
 				</section>
 
@@ -149,24 +149,44 @@
 
 				<section>
 					<h2>Jade</h2>
-					
+					Es un sistema de plantillas.
+					<pre><code>doctype html
+html
+  head
+    title=pageTitle
+  body
+    h1#titulo Ejemplo 
+    #container.col</code></pre>
+					<pre><code>doctype html
+&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+	&lt;title&gt;pageTitle&lt;/title&gt;
+&lt;/head&gt;
+	&lt;body&gt;
+    	&lt;h1 id="titulo"&gt;Ejemplo&lt;/h1&gt;
+    	&lt;div id="container" class="col"&gt;&lt;/div&gt;
+    &lt;/body&gt
+&lt;/html&gt;</code></pre>
 				</section>
 
 				<section>
 					<h2>Express</h2>
+					<p>
+						Framework para hacer aplicaciones web para node.js
+					</p>
+					<p>
+						Es ligero y facilita hacer el MVC
+					</p>
 				</section>
 
 				<section>
 					<h2>Socket.io</h2>
 					<p>
 						Nos permite manejar eventos en tiempo real con node.js.
-						https://github.com/learnboost/socket.io/wiki
 					</p>
 				</section>
 
-
 				<section>
-
 					<h2>Pong.js "Cliente"</h2>
 					<p>
 						Pong.js es el encargado de recibir los datos de entrada que serán las coordenadas de los dos jugadores, la posición de la bola y los resultados
@@ -174,26 +194,52 @@
 					</p>
 				</section>
 				<section>
+					<h2>nodepong.js "Servidor"</h2>
+					<p>
+						Se encargará de:
+						<ul>
+							<li>
+								Llevar la lógica de juego
+							</li>
+							<li>
+								Manejar los eventos de los clientes
+							</li>
+							<li>
+								Enviar los nuevos datos a los clientes
+							</li>
+							<li>
+								Manejar la cola de usuarios
+							</li>
+						</ul>
+					</p>
+				</section>
+
+				<section>
 					<section>
 						<h2>Paso 1 - Instalación y Estructura de ficheros</h2>
-						1.- Descargar el esqueleto de la aplicación.<br>
-						2.- Para poder instalar los modulos y dependencias necesarios introduciremos el comando 
+						1.- Descargar el esqueleto de la aplicación.
+						<br>
+						2.- Para poder instalar los modulos y dependencias necesarios introduciremos el comando
 						<b>npm install</b> en la raiz del proyecto "Donde tenemos el fichero <b>package.json</b>".
 					</section>
 					<section>
 						<h3>Paso 1 - Instalación y Estructura de ficheros - Ficheros del proyecto</h3>
-							La estructura de directorios y ficheros es la siguiente:<br>
-							node_modules: Contiene todos los modulos de node necesarios para trabajar.<br>
-							public: En este directorio tenemos el cliente de juego y la hoja de estilos<br>
-							views: Donde tenemos el index de la web que contendrá la aplicación<br>
-							nodepong.js: Donde tenemos el servidor y la lógica de juego.<br>
-							package.json:
+						La estructura de directorios y ficheros es la siguiente:
+						<br>
+						node_modules: Contiene todos los modulos de node necesarios para trabajar.
+						<br>
+						public: En este directorio tenemos el cliente de juego y la hoja de estilos
+						<br>
+						views: Donde tenemos el index de la web que contendrá la aplicación
+						<br>
+						nodepong.js: Donde tenemos el servidor y la lógica de juego.
+						<br>
+						package.json:
 					</section>
 					<section>
-					<h3>Paso 1 - Instalación y Estructura de ficheros - Ejemplo</h3>
-					<pre>
-					<code style="font-size: 18px; margin-top: 20px;">
-					{
+						<h3>Paso 1 - Instalación y Estructura de ficheros - Ejemplo</h3>
+						<pre>
+					<code>					{
 					    "name": "nodepong",
 					    "version": "0.0.1",
 					    "description": "Pong en red",
@@ -210,41 +256,41 @@
 				</section>
 				<section>
 					<section>
-					<h2>Paso 2 - El juego</h2>
-					El cliente pong.js tiene las siguientes funciones que se encargarán de pintar todos los elementos
-					del juego.
-					Sus funciones serán las siguientes:
+						<h2>Paso 2 - El juego</h2>
+						El cliente pong.js tiene las siguientes funciones que se encargarán de pintar todos los elementos
+						del juego.
+						Sus funciones serán las siguientes:
 					</section>
 					<section>
-					<h3>Paso 2 - El juego - Funciones del cliente</h3>					
-					function init(data): Esta función actua como "main" de nuestro cliente.
-					function setFullScreen(data): Esta función nos permite poner el juego a pantalla completa<br>
-					function paint(data): Esta función se encarga de pintar los distintos elementos en pantalla<br>
-					function paintLet(): Pintado de red de juego "Usada para simplificar paint"<br>
-					function paintData(data): Pintado de datos de juego "Usada para simplificar paint"
+						<h3>Paso 2 - El juego - Funciones del cliente</h3>
+						function init(data): Esta función actua como "main" de nuestro cliente.
+						function setFullScreen(data): Esta función nos permite poner el juego a pantalla completa
+						<br>
+						function paint(data): Esta función se encarga de pintar los distintos elementos en pantalla
+						<br>
+						function paintLet(): Pintado de red de juego "Usada para simplificar paint"
+						<br>
+						function paintData(data): Pintado de datos de juego "Usada para simplificar paint"
 					</section>
-					
+
 					<section>
-					<h3>Paso 2 - El juego - Función Init</h3>
-					<pre>
-					<code>
-function init(data) {
+						<h3>Paso 2 - El juego - Función Init</h3>
+						<pre>
+					<code>function init(data) {
 	canvas = document.getElementById('juego');
 	ctx = canvas.getContext('2d');
 					
 	setFullScreen(data);
 						
 	paint(data);
-}
-					</code>
+}</code>
 					</pre>
 					</section>
-					
+
 					<section>
-					<h3>Paso 2 - El juego - Función setFullScreen</h3>
-					<pre>
-					<code>
-function setFullScreen(data) {
+						<h3>Paso 2 - El juego - Función setFullScreen</h3>
+						<pre>
+					<code>function setFullScreen(data) {
 	canvas.width = data.width;
 	canvas.height = data.height;
 					
@@ -262,16 +308,14 @@ function setFullScreen(data) {
 	canvas.style.top = '50%';
 	canvas.style.marginLeft = -(canvas.width * scale) / 2 + 'px';
 	canvas.style.marginTop = -(canvas.height * scale) / 2 + 'px';
-}
-					</code>
+}</code>
 					</pre>
 					</section>
-					
+
 					<section>
-					<h3>Paso 2 - El juego - Función paint</h3>
-					<pre>
-					<code>
-function paint(data) {		
+						<h3>Paso 2 - El juego - Función paint</h3>
+						<pre>
+					<code>function paint(data) {		
 	//FONDO
 	ctx.fillStyle = '#000';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -291,16 +335,14 @@ function paint(data) {
 						
 	//DATOS
 	paintData();
-}
-					</code>
+}</code>
 					</pre>
 					</section>
-					
+
 					<section>
-					<h3>Paso 2 - El juego - Funciones auxiliares para paint</h3>
-					<pre>
-					<code>
-function paintLet()
+						<h3>Paso 2 - El juego - Funciones auxiliares para paint</h3>
+						<pre>
+					<code>function paintLet()
 {
 	var i;
 	for(i=10;i&#60 500;i+=20)
@@ -318,55 +360,40 @@ function paintData(data)
 						
 	//GOLES J2
 	ctx.fillText(0,560,75); 
-}
-					</code>
+}</code>
 					</pre>
 					</section>
-					
+
 				</section>
-<section>
 				<section>
-					<h2>Paso 3 - Comunicación con socket.io</h2>
-					<ul>
-						<li>Configuración</li>
-						<li>Emitir</li>
-						<li>Eventos</li>
-					</ul>
-				</section>
-				
-				<section>
-					<h2>Configuracion</h2>
-					<pre>
-					<code>
-// Indicamos que escuche en el puerto especificado
+					<section>
+						<h2>Paso 3 - Comunicación con socket.io</h2>
+					</section>
+
+					<section>
+						<h2>Configuración</h2>
+						<pre><code>// Indicamos que escuche en el puerto especificado
 var io = require('socket.io').listen(app.listen(8080));
 // Nivel de log de socket.io
 io.set('log level', 1);
 //Indicando metodos de comunicacion a usar
-io.set('transports', ['websocket']);
-					</code>
-					</pre>
-<a href="//github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO">Más info.</a>
-				</section>	
-				
-				<section>
-					<h2>Emitiendo con socket.io</h2>
-					<pre>
-					<code>
-// Emite al socket actual de cliente que está conectado
+io.set('transports', ['websocket']);</code></pre>
+						<a href="//github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO">Más info.</a>
+					</section>
+
+					<section>
+						<h2>Emitiendo con socket.io</h2>
+						<pre><code>// Emite al socket actual de cliente que está conectado
 socket.emit('evento', datos);
 // Emite a todos los clientes conectados
 io.sockets.emit('evento', datos);
-// Envia un mensaje a todos los conectados menos al que socket que lo envia
-socket.broadcast.emit('evento', datos);
-					</code>
-					</pre>
-				</section>
-				<section>
-					<h2>Eventos con socket.io (Servidor)</h2>
-					<pre>
-					<code>
-	...	...	...	...	...
+// Envia un mensaje a todos los conectados 
+// menos al que socket que lo envia
+socket.broadcast.emit('evento', datos);</code></pre>
+					</section>
+					<section>
+						<h2>Eventos con socket.io (Servidor)</h2>
+						<pre><code>	...	...	...	...	...
 var clientCounter=0;
 
 io.sockets.on('connection', function(socket) {
@@ -376,42 +403,63 @@ io.sockets.on('connection', function(socket) {
 		console.log(data);
 	});
 	
-	
 	socket.on('disconnect', function() {
 		console.log("Cliente desconectado");
 	});
-});
-					</code>
-					</pre>
-				</section>
-				<section>
-					<h2>Eventos con socket.io (Cliente)</h2>
-	...	...	...	...	...
-&lt;script src="/socket.io/socket.io.js"&gt; &lt;/script&gt;
-	...	...	...	...	...
-					<pre>
-					<code>
-	...	...	...	...	...
-window.onload = (function() {
+});</code></pre>
+					</section>
+					<section>
+						<h2>Eventos con socket.io (Cliente)</h2>
+						<h3>HTML</h3>
+						<pre><code>	...	...	...	...	...
+&lt;script src="/socket.io/socket.io.js"&gt;&lt;/script&gt;
+	...	...	...	...	...</code></pre>
+						<h3>JS</h3>
+						<pre><code>window.onload = (function() {
 	var socket = io.connect("http://localhost:8080");
 	socket.on('connect', function() {
 		socket.emit('adduser',{hola: new Date()});
 	});
-});
-					</code>
-					</pre>
-				</section>
-</section>
-				<section>
-					<h2>Paso 4 - Todo junto</h2>
+});</code></pre>
+					</section>
 				</section>
 
+				<section>
+					<section>
+						<h2>Paso 4 - Todo junto</h2>
+					</section>
+
+					<section>
+						<h2>Logica del juego</h2>
+					</section>
+					<section>
+						<h2>Eventos del servidor</h2>
+					</section>
+					<section>
+						<h2>Eventos del cliente</h2>
+					</section>
+				</section>
+
+				<section>
+					<h2>Más iformación</h2>
+					<ul>
+						<li>
+							https://github.com/learnboost/socket.io/wiki
+						</li>
+						<li>
+							http://expressjs.com/guide.html
+						</li>
+						<li>
+							http://jade-lang.com/
+						</li>
+					</ul>
+				</section>
 
 				<section>
 					<h1>FIN</h1>
-						<small><a href="http://programadorespelirrojos.blogspot.com">Francisco García Díaz</a> / <a href="http://twitter.com/PacoPGD">@PacoPGD</a></small>
-						<br/>
-						<small><a href="http://jesusnoseq.com/">Jesús Rodríguez Pérez</a> / <a href="http://twitter.com/jesusnoseq">@jesusnoseq</a></small>
+					<small><a href="http://programadorespelirrojos.blogspot.com">Francisco García Díaz</a> / <a href="http://twitter.com/PacoPGD">@PacoPGD</a></small>
+					<br/>
+					<small><a href="http://jesusnoseq.com/">Jesús Rodríguez Pérez</a> / <a href="http://twitter.com/jesusnoseq">@jesusnoseq</a></small>
 				</section>
 
 			</div>
