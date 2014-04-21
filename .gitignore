@@ -27,3 +27,6 @@ node_modules
 #System scripts
 *.bat
 *.sh
+
+# Ignore Aptana settings
+.settings
