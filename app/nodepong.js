@@ -232,8 +232,6 @@ function update() {
 
 // Parte para cada cliente
 io.sockets.on('connection', function(socket) {
-	//socket.set('id',playerCounter);
-	//console.log(socket);
 	var myid = playerCounter;
 
 	playerCounter++;
@@ -241,7 +239,7 @@ io.sockets.on('connection', function(socket) {
 	console.log("ID del nuevo cliente: " + myid);
 	socket.on('adduser', function() {
 		users.push(myid);
-		if(gameStatus==STOPPED /*player1==null || player2==null*/){
+		if(gameStatus==STOPPED){
 			chagePlayer();
 		}
 
